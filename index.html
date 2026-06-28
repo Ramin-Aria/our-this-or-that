@@ -29,10 +29,9 @@
   </div>
 
   <script>
+    // تنظیم تعداد سوالات پیش‌فرض به ۱ سوال
     let questions = JSON.parse(localStorage.getItem('customQuestions')) || [
-      {q: "قهوه یا چای؟", options: ["قهوه", "چای"]},
-      {q: "سفر دریا یا کوه？", options: ["دریا", "کوه"]},
-      {q: "صبح یا شب؟", options: ["صبح", "شب"]}
+      {q: "قهوه یا چای؟", options: ["قهوه", "چای"]}
     ];
 
     let myAnswers = [];
