@@ -1,9 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Vazirmatn:wght@400;500;700&display=swap');
 
 :root {
-  --bg-dark-velvet: #1a0206;    
-  --card-burgundy: #2d040f;     
-  --gold-luxury: #e2ba7d;       
+  /* پلت رنگی عمیق، رمانتیک و لوکس متناسب با کادرهای زرشکی پوستر نمونه */
+  --bg-dark-velvet: #1a0206;    /* مشکی متمایل به زرشکی خیلی تیره */
+  --card-burgundy: #2d040f;     /* بدنه زرشکی عمیق کانتینر اصلی */
+  --gold-luxury: #e2ba7d;       /* رنگ متون فرعی و خطوط تفکیک */
   --text-white: #ffffff;
   --text-gold: #f1d3a1;
   --border-subtle: rgba(226, 186, 125, 0.15);
@@ -24,16 +25,18 @@ body {
   justify-content: center;
   color: var(--text-white);
   
-  background: url('https://images.unsplash.com/photo-1559563458-527698bf5295?q=80&w=1200&auto=format&fit=crop') no-repeat center center fixed;
+  /* تصویر انتخابی شما از Unsplash: بافت کلوزآپ، تیره و فوق‌العاده رمانتیک گل رز */
+  background: url('https://images.unsplash.com/photo-1546842931-886c185b4c8c?q=80&w=1400&auto=format&fit=crop') no-repeat center center fixed;
   background-size: cover;
   position: relative;
 }
 
+/* لایه زرشکی تیره روی کل صفحه برای متمایل کردن عکس به زرشکی سوخته و حفظ کنتراست */
 body::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, rgba(26, 2, 6, 0.94), rgba(58, 4, 18, 0.9));
+  background: linear-gradient(135deg, rgba(20, 1, 4, 0.95), rgba(45, 4, 15, 0.88)), rgba(0, 0, 0, 0.3);
   z-index: 0;
 }
 
@@ -42,13 +45,14 @@ body::before {
   max-width: 540px;
   background: var(--card-burgundy);
   border: 1px solid var(--border-subtle);
-  border-radius: 0px; 
+  border-radius: 0px; /* لبه‌های کاملاً تیز و مینی‌مال تخت هماهنگ با دیزاین چالش نمونه */
   padding: 50px 35px;
   box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05);
   position: relative;
   z-index: 1;
 }
 
+/* فونت دست‌نویس لوکس انگلیسی اسم بازی */
 .en-title {
   font-family: 'Pinyon Script', cursive;
   color: var(--text-gold);
@@ -71,6 +75,7 @@ body::before {
   opacity: 0.8;
 }
 
+/* بخش سوالات */
 .question {
   border-bottom: 1px solid rgba(226, 186, 125, 0.12);
   padding-bottom: 28px;
@@ -85,6 +90,7 @@ body::before {
   display: block;
 }
 
+/* دکمه گزینه‌ها (تخت، بدون گردی، با خط باریک دور کادر) */
 .options {
   display: grid;
   grid-template-columns: 1fr;
@@ -124,6 +130,7 @@ button.option.selected {
   font-weight: 700;
 }
 
+/* دکمه توپر پایان بازی */
 .btn {
   background: var(--text-white);
   color: var(--bg-dark-velvet);
@@ -150,6 +157,7 @@ button.option.selected {
   cursor: not-allowed;
 }
 
+/* دکمه افزودن سوال جدید بالا صفحه */
 .btn-admin {
   background: transparent;
   color: var(--text-gold);
@@ -168,7 +176,7 @@ button.option.selected {
   border-color: var(--text-gold);
 }
 
-/* استایل اختصاصی آیکون‌های ادیت و حذف گوگل */
+/* آیکون‌های مدیریت ادیت و حذف بر اساس متریال دیزاین گوگل */
 .admin-actions {
   display: flex;
   gap: 16px;
@@ -177,7 +185,7 @@ button.option.selected {
 .action-icon {
   font-family: 'Material Symbols Outlined' !important;
   font-size: 20px;
-  color: rgba(255, 255, 255, 0.35); /* رنگ پیش‌فرض ملات و هماهنگ با تم */
+  color: rgba(255, 255, 255, 0.35); /* رنگ پیش‌فرض ملایم، بدون شلوغ‌کاری */
   cursor: pointer;
   user-select: none;
   transition: color 0.2s, transform 0.2s;
@@ -189,9 +197,10 @@ button.option.selected {
 }
 
 .action-icon.delete:hover {
-  color: #f87171; /* تغییر ظریف به قرمز ملایم موقع هاور حذف */
+  color: #f87171; /* تغییر بسیار ملایم به قرمز روشن فقط هنگام هاور */
 }
 
+/* باکس نتایج */
 .result {
   margin-top: 45px;
   padding: 30px 25px;
