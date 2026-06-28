@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>این یا آن • ما دو تا ❤️ v2.0</title>
+  <title>این یا آن • ما دو تا ❤️ v2.1</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <div style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;">
-      <div id="myProfile" style="font-weight:bold;"></div>
-      <div id="partnerProfile" style="font-weight:bold; opacity:0.7;"></div>
+    <div style="display:flex; justify-content:space-between; margin-bottom:25px; font-size:18px;">
+      <div id="myProfile"></div>
+      <div id="partnerProfile" style="opacity:0.75;"></div>
     </div>
 
     <h1>🎲 این یا آن • ما دو تا</h1>
-    <p style="text-align:center;color:#c2185b" id="status">۲۰ سوال رمانتیک - نسخه ۲.۰</p>
+    <p style="text-align:center; color:#c2185b; margin-bottom:20px;" id="status">۲۰ سوال رمانتیک - v2.1</p>
 
     <div class="progress"><div class="progress-bar" id="progress"></div></div>
 
@@ -79,16 +79,46 @@
 
     function selectAnswer(i, choice) {
       myAnswers[i] = choice;
-      const buttons = document.querySelectorAll('.question')[i].querySelectorAll('button');
-      buttons.forEach(b => b.classList.remove('selected'));
+      const qDiv = document.querySelectorAll('.question')[i];
+      qDiv.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
       event.target.classList.add('selected');
       document.getElementById('finishBtn').disabled = myAnswers.includes(null);
     }
 
     function finishGame() {
       if (myAnswers.includes(null)) return;
-      // ... (بقیه کد finishGame از نسخه قبلی)
-      alert("برای کامل شدن این بخش، کد کامل رو در پیام بعدی می‌فرستم.");
+
+      const encoded = myAnswers.map(a => a === 'a' ? '1' : '2').join('');
+      const base = window.location.origin + window.location.pathname;
+
+      let html = `<h2 style="text-align:center">🎉 بازی تموم شد!</h2>`;
+
+      if (isSecondPlayer) {
+        let match = 0;
+        html += `<p style="font-size:26px; text-align:center"><strong>تطابق: ${Math.round(myAnswers.filter((a,i) => a === partnerAnswers[i]).length / 20 * 100)}%</strong></p>`;
+        
+        questions.forEach((q,i) => {
+          const my = myAnswers[i]==='a' ? q.a : q.b;
+          const partner = partnerAnswers[i]==='a' ? q.a : q.b;
+          html += `<p><strong>${i+1}. ${q.q}</strong><br>${myName}: ${my} | ${partnerName}: ${partner} ${myAnswers[i]===partnerAnswers[i] ? '❤️' : ''}</p>`;
+        });
+
+        const resultLink = `${base}?p=${partnerAnswers.map(a => a==='a'?'1':'2').join('')}&r=${encoded}`;
+        html += `<p style="margin-top:25px">لینک نتیجه رو براش بفرست:</p>`;
+        html += `<input type="text" value="${resultLink}" style="width:100%; padding:12px; font-size:14px;" readonly>`;
+        html += `<button class="btn" onclick="copyLink('${resultLink}')">کپی لینک نتیجه</button>`;
+      } else {
+        const shareLink = `${base}?p=${encoded}`;
+        html += `<p>لینک بازی:</p><input value="${shareLink}" style="width:100%;padding:12px" readonly>`;
+        html += `<button class="btn" onclick="copyLink('${shareLink}')">کپی لینک</button>`;
+      }
+
+      document.getElementById('result').innerHTML = html;
+      document.getElementById('result').style.display = 'block';
+    }
+
+    function copyLink(link) {
+      navigator.clipboard.writeText(link).then(() => alert('✅ لینک کپی شد'));
     }
 
     window.onload = () => {
