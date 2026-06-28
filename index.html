@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>این یا آن • ما دو تا ❤️ v3.7</title>
+  <title>این یا آن • ما دو تا ❤️ v3.8</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h1>🎲 این یا آن • ما دو تا</h1>
-    <p style="text-align:center;color:#c2185b" id="status">نسخه ۳.۷</p>
+    <p style="text-align:center;color:#c2185b" id="status">نسخه ۳.۸</p>
 
     <div style="text-align:center; margin:15px 0;" id="adminButtons">
       <button class="btn" onclick="addNewQuestion()" style="background:#1e88e5; width:auto; padding:12px 24px;">+ سوال جدید</button>
@@ -33,7 +33,7 @@
 
     let myAnswers = [];
     let myName = "";
-    let partnerName = "طرف مقابل";
+    let partnerName = "";
     let partnerAnswers = null;
     let isSecondPlayer = false;
     let isResultMode = false;
@@ -42,7 +42,7 @@
       const params = new URLSearchParams(window.location.search);
       const p = params.get('p');
       const r = params.get('r');
-      const pn = params.get('pn'); // partner name
+      const pn = params.get('pn');
 
       if (r) {
         isResultMode = true;
@@ -57,7 +57,7 @@
       }
     }
 
-    function addNewQuestion() { /* ... */ 
+    function addNewQuestion() {
       const q = prompt("سوال جدید:");
       if (!q) return;
       const options = [];
@@ -122,16 +122,16 @@
         questions.forEach((q,i) => {
           const myOpt = q.options[myAnswers[i]];
           const partnerOpt = q.options[partnerAnswers[i]];
-          html += `<p><strong>${i+1}. ${q.q}</strong><br>${myName}: ${myOpt} | ${partnerName}: ${partnerOpt} ${myAnswers[i]===partnerAnswers[i]?'❤️':''}</p>`;
+          html += `<p><strong>${i+1}. ${q.q}</strong><br>${myName}: ${myOpt} | ${partnerName || "طرف مقابل"}: ${partnerOpt} ${myAnswers[i]===partnerAnswers[i]?'❤️':''}</p>`;
         });
 
         const resultLink = `${base}?p=${partnerAnswers.map(a => a===0||a==='0'?'1':'2').join('')}&r=${encoded}&pn=${encodeURIComponent(myName)}`;
-        html += `<p style="margin-top:20px">لینک نتیجه رو براش بفرست:</p>`;
+        html += `<p style="margin-top:20px">لینک نتیجه:</p>`;
         html += `<input type="text" value="${resultLink}" style="width:100%;padding:12px" readonly>`;
         html += `<button class="btn" onclick="copyLink('${resultLink}')">کپی لینک نتیجه</button>`;
       } else {
         const shareLink = `${base}?p=${encoded}`;
-        html += `<p>لینک بازی رو بفرست:</p><input value="${shareLink}" style="width:100%;padding:12px" readonly>`;
+        html += `<p>لینک بازی:</p><input value="${shareLink}" style="width:100%;padding:12px" readonly>`;
         html += `<button class="btn" onclick="copyLink('${shareLink}')">کپی لینک</button>`;
       }
 
@@ -148,7 +148,7 @@
       questions.forEach((q,i) => {
         const myOpt = q.options[myAnswers[i]];
         const partnerOpt = q.options[partnerAnswers[i]];
-        html += `<p><strong>${i+1}. ${q.q}</strong><br>تو: ${myOpt} | طرف مقابل: ${partnerOpt}</p>`;
+        html += `<p><strong>${i+1}. ${q.q}</strong><br>تو: ${myOpt} | ${partnerName || "طرف مقابل"}: ${partnerOpt}</p>`;
       });
       document.getElementById('result').innerHTML = html;
       document.getElementById('result').style.display = 'block';
