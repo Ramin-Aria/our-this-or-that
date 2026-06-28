@@ -234,16 +234,16 @@ button.option.selected {
   text-align: right;
 }
 
-/* استایل جدید دکمه بیشتر... به صورت متن زرد باتن‌ها */
+/* اصلاح استایل دکمه بیشتر... (طلایی، کوچک، راست‌چین) */
 .text-details-trigger {
   color: var(--text-gold);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   cursor: pointer;
   user-select: none;
   transition: opacity 0.2s;
   display: inline-block;
-  direction: ltr; /* برای نمایش صحیح علامت سه نقطه */
+  direction: rtl; /* راست‌چین شدن کامل حروف و سه نقطه */
 }
 
 .text-details-trigger:hover {
