@@ -234,14 +234,14 @@ button.option.selected {
   text-align: right;
 }
 
-/* استایل متن طراح سوال (هم‌اندازه و همرنگ فیلد بازیکن) */
+/* اصلاح کامل استایل متن طراح سوال (دقیقاً همرنگ و هم‌اندازه فیلد بازیکن) */
 .history-role-text {
   color: rgba(255, 255, 255, 0.5) !important;
   font-size: 11px !important;
   font-weight: 400 !important;
 }
 
-/* استایل دکمه بیشتر... (طلایی دکمه‌ها و هم‌اندازه با بقیه نوشته‌ها) */
+/* استایل دکمه بیشتر... (طلایی دکمه‌ها و سایز استاندارد ۱۱ پیکسل) */
 .text-details-trigger {
   color: var(--text-gold) !important;
   font-size: 11px !important;
