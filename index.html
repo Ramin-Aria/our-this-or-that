@@ -35,7 +35,7 @@
       <button class="btn-clear-history" onclick="clearHistory()">حذف کل تاریخچه</button>
     </div>
 
-    <div id="status">BY RAMIN • VERSION 5.2.1</div>
+    <div id="status">BY RAMIN • VERSION 5.2.2</div>
   </div>
 
   <script>
@@ -231,7 +231,7 @@
       }
     }
 
-    function renderInlineHistory() {
+function renderInlineHistory() {
   const history = JSON.parse(localStorage.getItem('gameHistory')) || [];
   const listEl = document.getElementById('inlineHistoryList');
   
@@ -241,11 +241,11 @@
     listEl.innerHTML = history.map((h, index) => `
       <div class="history-item">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <span class="history-role-text">طراح سوال: ${h.creator}</span>
+          <span class="history-role-text" style="color: rgba(255, 255, 255, 0.5) !important; font-size: 11px !important; font-weight: 400 !important;">طراح سوال: ${h.creator}</span>
           <span style="font-size:14px; font-weight:700; color:#4ade80;">${h.percent}% ❤️</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <span class="history-player-text">بازیکن: ${h.player}</span>
+          <span class="history-player-text" style="color: rgba(255, 255, 255, 0.5) !important; font-size: 11px !important; font-weight: 400 !important;">بازیکن: ${h.player}</span>
           <span style="font-size:11px; color:rgba(255,255,255,0.5);">${h.dateTime}</span>
         </div>
         <div style="text-align: right; margin-top: 5px;">
@@ -263,7 +263,6 @@
     `).join('');
   }
 }
-
     function toggleDetails(index) {
       const detailsEl = document.getElementById(`details-${index}`);
       detailsEl.style.display = detailsEl.style.display === 'none' ? 'block' : 'none';
