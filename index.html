@@ -25,19 +25,30 @@
 
     <div id="result" class="result"></div>
 
-    <div id="historySection" class="history-section">
-      <h3 class="history-title">HISTORY</h3>
-      <div id="historyList"></div>
-      <button class="btn-clear-history" onclick="clearHistory()">حذف تاریخچه</button>
+    <div style="text-align:center; margin-top:25px;">
+      <button class="btn-history-trigger" onclick="openHistoryModal()">HISTORY</button>
     </div>
 
-    <div id="status">BY RAMIN • VERSION 4.5</div>
+    <div id="status">BY RAMIN • VERSION 4.7</div>
+  </div>
+
+  <div id="historyModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
+      <h3 class="history-modal-title">GAME HISTORY</h3>
+      <div id="modalHistoryList"></div>
+      <button class="btn-clear-history" onclick="clearHistory()">حذف کل تاریخچه</button>
+    </div>
   </div>
 
   <script>
-    let questions = JSON.parse(localStorage.getItem('customQuestions')) || [
+    // تعریف سوال پیش‌فرض به عنوان مقدار اولیه ثابت
+    const defaultQuestions = [
       {q: "قهوه یا چای؟", options: ["قهوه", "چای"]}
     ];
+    
+    // در ابتدا همیشه سوال پیش‌فرض لود می‌شود تا با رفرش شدن، تغییرات طراح قبلی پاک شود
+    let questions = [...defaultQuestions];
 
     let myAnswers = [];
     let myName = "";
@@ -57,6 +68,8 @@
 
       if (r) {
         isResultMode = true;
+        // در حالت نمایش نتیجه، سوالات شخصی‌سازی شده مربوط به این بازی را از حافظه می‌خوانیم
+        questions = JSON.parse(localStorage.getItem('customQuestions')) || [...defaultQuestions];
         partnerAnswers = p ? p.split('').map(Number) : null;
         myAnswers = r.split('').map(Number);
         if (pn) myName = decodeURIComponent(pn);
@@ -65,15 +78,17 @@
         document.getElementById('finishActionArea').style.display = 'none';
         
         showFinalResult();
-        
-        // اگر طراح لینک را باز کرد، بازی در تاریخچه طراح هم ثبت شود
         saveToHistory(partnerName, myName, partnerAnswers, myAnswers);
       } else if (p) {
+        // در حالت بازیکن دوم، سوالات شخصی‌سازی شده طراح را از حافظه می‌خوانیم
+        questions = JSON.parse(localStorage.getItem('customQuestions')) || [...defaultQuestions];
         partnerAnswers = p.split('').map(Number);
         isSecondPlayer = true;
         document.getElementById('adminButtons').style.display = 'none';
+      } else {
+        // اگر صفحه اول (بدون پارامتر URL) رفرش شد، حافظه سوالات قبلی پاک می‌شود تا از نو شروع شود
+        localStorage.removeItem('customQuestions');
       }
-      renderHistory();
     }
 
     function addNewQuestion() {
@@ -149,7 +164,6 @@
           </p>`;
         });
 
-        // ذخیره در تاریخچه مرورگر نفر دوم (بازیکن)
         saveToHistory(partnerName, myName, partnerAnswers, myAnswers);
 
         const encodedPartnerAnswers = partnerAnswers.join('');
@@ -167,7 +181,6 @@
       document.getElementById('result').innerHTML = html;
       document.getElementById('result').style.display = 'block';
       document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-      renderHistory();
     }
 
     function copyLink(link) {
@@ -193,56 +206,78 @@
       document.getElementById('result').style.display = 'block';
     }
 
-    // تابع ذخیره سازی داده‌ها در تاریخچه
     function saveToHistory(creator, player, pAnswers, rAnswers) {
       if (!creator || !player || !pAnswers || !rAnswers) return;
-      
       let history = JSON.parse(localStorage.getItem('gameHistory')) || [];
-      
       const correctCount = rAnswers.filter((a, i) => a === pAnswers[i]).length;
       const percent = Math.round((correctCount / pAnswers.length) * 100);
       
       const now = new Date();
       const dateTimeStr = now.toLocaleDateString('fa-IR') + ' ساعت ' + now.toLocaleTimeString('fa-IR', {hour: '2-digit', minute:'2-digit'});
 
-      // جلوگیری از ثبت رکورد کاملاً تکراری
       const isDuplicate = history.some(h => h.creator === creator && h.player === player && h.dateTime === dateTimeStr);
       if (isDuplicate) return;
 
-      history.unshift({ creator, player, percent, dateTime: dateTimeStr });
+      const details = questions.map((q, i) => ({
+        question: q.q,
+        creatorOpt: q.options[pAnswers[i]] || "انتخاب نشده",
+        playerOpt: q.options[rAnswers[i]] || "انتخاب نشده",
+        isMatch: pAnswers[i] === rAnswers[i]
+      }));
+
+      history.unshift({ creator, player, percent, dateTime: dateTimeStr, details });
       localStorage.setItem('gameHistory', JSON.stringify(history));
     }
 
-    // تابع رندر کردن لیست تاریخچه در قالب کادر
-    function renderHistory() {
+    function openHistoryModal() {
       const history = JSON.parse(localStorage.getItem('gameHistory')) || [];
-      const container = document.getElementById('historySection');
-      const listEl = document.getElementById('historyList');
+      const listEl = document.getElementById('modalHistoryList');
       
       if (history.length === 0) {
-        container.style.display = 'none';
-        return;
+        listEl.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); font-size:14px; padding:20px 0;">هیچ بازی تایید شده‌ای ثبت نشده است.</p>`;
+      } else {
+        listEl.innerHTML = history.map((h, index) => `
+          <div class="history-item">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <span style="color:var(--text-gold); font-size:13px; font-weight:500;">طراح: ${h.creator}</span>
+              <span style="font-size:14px; font-weight:700; color:#4ade80;">${h.percent}% ❤️</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:rgba(255,255,255,0.5); margin-bottom:10px;">
+              <span>بازیکن: ${h.player}</span>
+              <span>${h.dateTime}</span>
+            </div>
+            <button class="btn-details-trigger" onclick="toggleDetails(${index})">مشاهده جزئیات سوالات</button>
+            <div id="details-${index}" class="history-details-box" style="display:none;">
+              ${h.details.map((d, i) => `
+                <div style="margin-bottom:8px; font-size:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px;">
+                  <strong style="color:#fff; display:block; margin-bottom:3px;">${i+1}. ${d.question}</strong>
+                  <span style="color:var(--text-gold)">${h.creator}:</span> ${d.creatorOpt} | <span style="color:var(--text-gold)">${h.player}:</span> ${d.playerOpt} ${d.isMatch ? '🌹' : ''}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('');
       }
-      
-      container.style.display = 'block';
-      listEl.innerHTML = history.map(h => `
-        <div class="history-item">
-          <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-            <span style="color:var(--text-gold); font-size:12px;">طراح: ${h.creator}</span>
-            <span style="font-size:13px; font-weight:700; color:#4ade80;">${h.percent}% ❤️</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,0.5);">
-            <span>بازیکن: ${h.player}</span>
-            <span>${h.dateTime}</span>
-          </div>
-        </div>
-      `).join('');
+      document.getElementById('historyModal').style.display = 'flex';
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('historyModal').style.display = 'none';
+    }
+
+    function toggleDetails(index) {
+      const detailsEl = document.getElementById(`details-${index}`);
+      if (detailsEl.style.display === 'none') {
+        detailsEl.style.display = 'block';
+      } else {
+        detailsEl.style.display = 'none';
+      }
     }
 
     function clearHistory() {
       if (confirm("آیا مایل به حذف کل تاریخچه بازی‌ها هستید؟")) {
         localStorage.removeItem('gameHistory');
-        renderHistory();
+        openHistoryModal();
       }
     }
 
@@ -256,7 +291,7 @@
     }
 
     function deleteQuestion(index) {
-      if (!confirm("آیا از حذف این سوال مطمئن هستید؟")) return;
+      if (!confirm("آیا از حذف این سوال مطمئن هستید防？")) return;
       questions.splice(index, 1);
       localStorage.setItem('customQuestions', JSON.stringify(questions));
       renderGame();
