@@ -17,9 +17,20 @@
     function checkUserAuth() {
       if (!currentUser) {
         document.getElementById('authModal').style.display = 'flex';
+        document.getElementById('userStatusNav').style.display = 'none';
       } else {
         document.getElementById('authModal').style.display = 'none';
+        document.getElementById('userStatusNav').style.display = 'flex';
+        document.getElementById('loggedUserName').innerText = currentUser.replace(/_/g, ' ');
         console.log("کاربر لاگین شده است:", currentUser);
+      }
+    }
+
+    function logoutUser() {
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.removeItem('chatUser');
+        currentUser = null;
+        location.reload();
       }
     }
 
@@ -32,7 +43,7 @@
       if (isRegisterMode) {
         title.innerText = "ثبت نام حساب جدید";
         btn.innerText = "ثبت نام";
-        toggleText.innerText = "قبلاً حساب ساخته‌اید؟ وارد شوید";
+        toggleText.innerText = "قبلاً حساب ساخته‌اید？ وارد شوید";
       } else {
         title.innerText = "ورود به برنامه";
         btn.innerText = "ورود";
@@ -107,12 +118,9 @@
   <div class="container">
     <div class="bg-hearts"></div>
     
-<div id="status" style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto;">
-      <span>BY RAMIN • VERSION 5.2.5</span>
-      <span id="userStatusArea" style="display: none; align-items: center; gap: 8px;">
-        <span id="loggedUserName" style="color: var(--text-gold); font-weight: bold;"></span>
-        <button onclick="logoutUser()" style="background: none; border: none; color: #ff5555; cursor: pointer; padding: 0; font-size: 12px; text-decoration: underline;">Logout</button>
-      </span>
+    <div id="userStatusNav" style="display: none; justify-content: space-between; align-items: center; width: 100%; max-width: 400px; margin: 0 auto 20px auto; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; font-size: 13px;">
+      <div style="color: rgba(255,255,255,0.6);">حساب کاربری: <span id="loggedUserName" style="color: var(--text-gold); font-weight: bold;"></span></div>
+      <button onclick="logoutUser()" style="background: none; border: none; color: #ff5555; cursor: pointer; padding: 0; font-size: 13px; font-weight: bold; text-decoration: underline;">Logout</button>
     </div>
     
     <h1 class="en-title">Are We a Match?</h1>
@@ -138,6 +146,8 @@
       <div id="inlineHistoryList"></div>
       <button class="btn-clear-history" onclick="clearHistory()">حذف کل تاریخچه</button>
     </div>
+
+    <div id="status" style="margin-top: 30px; text-align: center; color: rgba(255,255,255,0.4); font-size: 11px; letter-spacing: 1px;">BY RAMIN • VERSION 5.2.5</div>
   </div>
 
   <div id="authModal" class="modal-overlay" style="display: none;">
