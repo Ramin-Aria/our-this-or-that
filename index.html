@@ -9,10 +9,10 @@
 <body>
   <div class="container">
     <h1 class="en-title">Are We a Match?</h1>
-    <p id="status">VERSION 3.9</p>
+    <p id="status">VERSION 4.0</p>
 
     <div style="text-align:center; margin:15px 0;" id="adminButtons">
-      <button class="btn-outline" onclick="addNewQuestion()">+ Add New Question</button>
+      <button class="btn-admin" onclick="addNewQuestion()">BUILD A QUESTION</button>
     </div>
 
     <div id="game"></div>
@@ -86,13 +86,13 @@
         ).join('');
 
         let admin = !isSecondPlayer ? 
-          `<span onclick="editQuestion(${i})" style="cursor:pointer;margin:0 8px;color:#fca5a5;">✏️</span>
-           <span onclick="deleteQuestion(${i})" style="cursor:pointer;color:#ef4444;">🗑️</span>` : '';
+          `<span onclick="editQuestion(${i})" class="action-btn">EDIT</span>
+           <span onclick="deleteQuestion(${i})" class="action-btn delete">DELETE</span>` : '';
 
         html += `<div class="question">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <strong>${i+1}. ${q.q}</strong>
-            <div>${admin}</div>
+            <div class="admin-actions">${admin}</div>
           </div>
           <div class="options">${opts}</div>
         </div>`;
@@ -116,32 +116,32 @@
       const encodedMyAnswers = myAnswers.join('');
       const base = window.location.origin + window.location.pathname;
 
-      let html = `<h2 class="en-title" style="font-size:26px; margin-bottom:15px;">🎉 Done by ${myName}</h2>`;
+      let html = `<h2 class="en-title" style="font-size:38px; margin-bottom:15px;">🎉 Done by ${myName}</h2>`;
 
       if (isSecondPlayer) {
         const correctCount = myAnswers.filter((a, i) => a === partnerAnswers[i]).length;
         const matchPercent = Math.round((correctCount / questions.length) * 100);
         
-        html += `<p style="font-size:28px; text-align:center; color:#f43f5e; font-weight:700; margin-bottom:20px;">تطابق شما: ${matchPercent}% ❤️</p>`;
+        html += `<p style="font-size:24px; text-align:center; color:var(--text-gold); font-weight:700; margin-bottom:20px;">تطابق شما: ${matchPercent}% ❤️</p>`;
         
         questions.forEach((q, i) => {
           const myOpt = q.options[myAnswers[i]];
           const partnerOpt = q.options[partnerAnswers[i]];
-          html += `<p style="border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:10px;">
+          html += `<p style="border-bottom:1px solid rgba(226,186,125,0.1); padding-bottom:10px;">
             <strong>${i+1}. ${q.q}</strong><br>
-            <span style="color:#fca5a5">${myName}:</span> ${myOpt} | <span style="color:#fca5a5">${partnerName || "نفر اول"}:</span> ${partnerOpt} ${myAnswers[i] === partnerAnswers[i] ? '🌹' : ''}
+            <span style="color:var(--text-gold)">${myName}:</span> ${myOpt} | <span style="color:var(--text-gold)">${partnerName || "نفر اول"}:</span> ${partnerOpt} ${myAnswers[i] === partnerAnswers[i] ? '🌹' : ''}
           </p>`;
         });
 
         const encodedPartnerAnswers = partnerAnswers.join('');
         const resultLink = `${base}?p=${encodedPartnerAnswers}&r=${encodedMyAnswers}&p1n=${encodeURIComponent(partnerName)}&pn=${encodeURIComponent(myName)}`;
         
-        html += `<p style="margin-top:25px; color:#94a3b8;">لینک نتیجه نهایی برای فرستادن به ${partnerName || 'نفر اول'}:</p>`;
+        html += `<p style="margin-top:25px; color:rgba(255,255,255,0.6);">لینک نتیجه نهایی برای فرستادن به ${partnerName || 'نفر اول'}:</p>`;
         html += `<input type="text" value="${resultLink}" readonly>`;
         html += `<button class="btn" onclick="copyLink('${resultLink}')">کپی لینک نتیجه</button>`;
       } else {
         const shareLink = `${base}?p=${encodedMyAnswers}&p1n=${encodeURIComponent(myName)}`;
-        html += `<p style="color:#94a3b8; margin-top:20px;">لینک بازی را برای طرف مقابل بفرستید:</p><input type="text" value="${shareLink}" readonly>`;
+        html += `<p style="color:rgba(255,255,255,0.6); margin-top:20px;">لینک بازی را برای طرف مقابل بفرستید:</p><input type="text" value="${shareLink}" readonly>`;
         html += `<button class="btn" onclick="copyLink('${shareLink}')">کپی لینک بازی</button>`;
       }
 
@@ -155,18 +155,18 @@
     }
 
     function showFinalResult() {
-      let html = `<h2 class="en-title" style="font-size:32px; margin-bottom:15px;">Our Story ❤️</h2>`;
+      let html = `<h2 class="en-title" style="font-size:46px; margin-bottom:15px;">Our Story ❤️</h2>`;
       
       const correctCount = myAnswers.filter((a, i) => a === partnerAnswers[i]).length;
       const matchPercent = Math.round((correctCount / questions.length) * 100);
-      html += `<p style="font-size:28px; text-align:center; color:#f43f5e; font-weight:700; margin-bottom:25px;">تطابق نهایی: ${matchPercent}%</p>`;
+      html += `<p style="font-size:24px; text-align:center; color:var(--text-gold); font-weight:700; margin-bottom:25px;">تطابق نهایی: ${matchPercent}%</p>`;
 
       questions.forEach((q, i) => {
         const myOpt = q.options[myAnswers[i]] || "انتخاب نشده";
         const partnerOpt = q.options[partnerAnswers[i]] || "انتخاب نشده";
-        html += `<p style="border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:12px;">
+        html += `<p style="border-bottom:1px solid rgba(226,186,125,0.1); padding-bottom:12px;">
           <strong>${i+1}. ${q.q}</strong><br>
-          <span style="color:#fca5a5">${partnerName || "نفر اول"}:</span> ${partnerOpt} | <span style="color:#fca5a5">${myName || "نفر دوم"}:</span> ${myOpt} ${myAnswers[i] === partnerAnswers[i] ? '🌹' : ''}
+          <span style="color:var(--text-gold)">${partnerName || "نفر اول"}:</span> ${partnerOpt} | <span style="color:var(--text-gold)">${myName || "نفر دوم"}:</span> ${myOpt} ${myAnswers[i] === partnerAnswers[i] ? '🌹' : ''}
         </p>`;
       });
       document.getElementById('result').innerHTML = html;
