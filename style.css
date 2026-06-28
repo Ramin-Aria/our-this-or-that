@@ -1,10 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Vazirmatn:wght@400;500;700&display=swap');
 
 :root {
-  /* پلت رنگی زرشکی لوکس و دراماتیک کاملاً منطبق بر Amoréa Boutique */
-  --bg-dark-velvet: #1a0206;    /* زرشکی تیره عمیق نزدیک به مشکی */
-  --card-burgundy: #2d040f;     /* رنگ بدنه زرشکی لوکس کانتینر */
-  --gold-luxury: #e2ba7d;       /* طلایی برای تاکیدها و متون خاص */
+  --bg-dark-velvet: #1a0206;    
+  --card-burgundy: #2d040f;     
+  --gold-luxury: #e2ba7d;       
   --text-white: #ffffff;
   --text-gold: #f1d3a1;
   --border-subtle: rgba(226, 186, 125, 0.15);
@@ -25,13 +24,11 @@ body {
   justify-content: center;
   color: var(--text-white);
   
-  /* تصویر پس‌زمینه زنده و فوق‌العاده باکیفیت از رزهای زرشکی تیره مخملی بدون برگهای اضافه */
   background: url('https://images.unsplash.com/photo-1559563458-527698bf5295?q=80&w=1200&auto=format&fit=crop') no-repeat center center fixed;
   background-size: cover;
   position: relative;
 }
 
-/* لایه رنگی زرشکی سنگین روی پس‌زمینه برای حفظ کنتراست متون و القای حس تصویر پینترست */
 body::before {
   content: '';
   position: absolute;
@@ -45,14 +42,13 @@ body::before {
   max-width: 540px;
   background: var(--card-burgundy);
   border: 1px solid var(--border-subtle);
-  border-radius: 0px; /* طراحی کاملاً تخت و بدون گوشه گرد مانند نمونه لوکس پینترست */
+  border-radius: 0px; 
   padding: 50px 35px;
   box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05);
   position: relative;
   z-index: 1;
 }
 
-/* فونت فوق‌العاده رمانتیک دست‌نویس انگلیسی برای هدر */
 .en-title {
   font-family: 'Pinyon Script', cursive;
   color: var(--text-gold);
@@ -75,7 +71,6 @@ body::before {
   opacity: 0.8;
 }
 
-/* کارت‌ها و جداکننده‌های سوالات */
 .question {
   border-bottom: 1px solid rgba(226, 186, 125, 0.12);
   padding-bottom: 28px;
@@ -90,7 +85,6 @@ body::before {
   display: block;
 }
 
-/* دکمه‌های گزینه‌ها (تخت، خط باریک دور، کاملاً مینی‌مال) */
 .options {
   display: grid;
   grid-template-columns: 1fr;
@@ -130,7 +124,6 @@ button.option.selected {
   font-weight: 700;
 }
 
-/* دکمه اصلی پایان بازی (سفید توپر، عریض و درخشان مانند BUILD A BOUQUET) */
 .btn {
   background: var(--text-white);
   color: var(--bg-dark-velvet);
@@ -157,7 +150,6 @@ button.option.selected {
   cursor: not-allowed;
 }
 
-/* دکمه اضافه کردن سوال جدید (هماهنگ با تم مینی‌مال و متنی نمونه پینترست) */
 .btn-admin {
   background: transparent;
   color: var(--text-gold);
@@ -176,30 +168,30 @@ button.option.selected {
   border-color: var(--text-gold);
 }
 
-/* دکمه‌های متنی ادیت و حذف (بدون رنگ، بدون ایموجی، مینی‌مال و متنی) */
+/* استایل اختصاصی آیکون‌های ادیت و حذف گوگل */
 .admin-actions {
   display: flex;
-  gap: 12px;
+  gap: 16px;
 }
 
-.action-btn {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.4);
+.action-icon {
+  font-family: 'Material Symbols Outlined' !important;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.35); /* رنگ پیش‌فرض ملات و هماهنگ با تم */
   cursor: pointer;
-  transition: color 0.2s;
+  user-select: none;
+  transition: color 0.2s, transform 0.2s;
 }
 
-.action-btn:hover {
+.action-icon:hover {
   color: var(--text-gold);
+  transform: scale(1.1);
 }
 
-.action-btn.delete:hover {
-  color: #ef4444; /* تغییر ملایم رنگ فقط هنگام هاور روی حذف برای راهنمایی کاربر */
+.action-icon.delete:hover {
+  color: #f87171; /* تغییر ظریف به قرمز ملایم موقع هاور حذف */
 }
 
-/* باکس نمایش نتایج نهایی */
 .result {
   margin-top: 45px;
   padding: 30px 25px;
@@ -208,7 +200,6 @@ button.option.selected {
   border-radius: 0px;
 }
 
-/* اینپوت لینک‌ها */
 input[type="text"] {
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.15);
