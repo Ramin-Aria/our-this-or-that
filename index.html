@@ -3,47 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>این یا آن • بازی ما ❤️</title>
+  <title>این یا آن • ما دو تا ❤️</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
+    
     body {
-      font-family: 'Vazirmatn', Tahoma, sans-serif;
+      font-family: 'Vazirmatn', sans-serif;
       background: linear-gradient(135deg, #fff0f5, #e0f2fe);
-      margin: 0; padding: 15px; min-height: 100vh;
+      margin: 0; padding: 12px; min-height: 100vh;
     }
     .container {
-      max-width: 740px;
+      max-width: 720px;
       margin: auto;
       background: white;
       border-radius: 28px;
-      padding: 30px 20px;
+      padding: 25px;
       box-shadow: 0 20px 60px rgba(233,30,99,0.15);
     }
-    h1 { color: #e91e63; text-align: center; }
-    .question { background: #fff0f5; padding: 20px; margin: 18px 0; border-radius: 20px; }
-    .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
-    @media (min-width: 600px) { .options { flex-direction: row; } }
-    button { padding: 18px; border: none; border-radius: 16px; font-size: 17px; cursor: pointer; }
-    button.selected { background: #e91e63 !important; color: white; transform: scale(1.05); }
-    .btn { background: #e91e63; color: white; padding: 16px; border-radius: 50px; width: 100%; margin: 10px 0; font-size: 17px; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .profile img {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #e91e63;
+    }
+    h1 { color: #e91e63; text-align: center; margin: 15px 0; font-size: 26px; }
+    .question {
+      background: #fff0f5;
+      padding: 20px;
+      margin: 16px 0;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (min-width: 600px) {
+      .options { flex-direction: row; }
+    }
+    button.option {
+      padding: 18px;
+      border: 2px solid #f8bbd0;
+      background: white;
+      border-radius: 16px;
+      font-size: 17px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    button.option.selected {
+      background: #e91e63;
+      color: white;
+      border-color: #e91e63;
+      transform: scale(1.04);
+    }
+    .btn {
+      background: #e91e63;
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 50px;
+      font-size: 17px;
+      width: 100%;
+      margin: 12px 0;
+      cursor: pointer;
+    }
+    .btn:disabled { background: #ccc; }
+    .result { margin-top: 30px; padding: 25px; background: #f0f4c3; border-radius: 24px; display: none; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🎲 این یا آن • بازی ما ❤️</h1>
-    <p style="text-align:center; color:#c2185b;">۲۰ سوال رمانتیک</p>
-    <div id="game"></div>
-    <div style="text-align:center; margin:30px 0;">
-      <button class="btn" onclick="finishGame()" id="finishBtn" disabled>پایان بازی و گرفتن لینک</button>
+    <div class="header">
+      <div class="profile" id="myProfile"></div>
+      <div class="profile" id="partnerProfile" style="opacity:0.6;"></div>
     </div>
-    <div id="result"></div>
+
+    <h1>🎲 این یا آن • ما دو تا</h1>
+    <p style="text-align:center; color:#c2185b;" id="status">۲۰ سوال رمانتیک</p>
+
+    <div id="game"></div>
+
+    <div style="text-align:center;">
+      <button class="btn" id="finishBtn" onclick="finishGame()" disabled>پایان بازی و گرفتن لینک</button>
+    </div>
+
+    <div id="result" class="result"></div>
   </div>
 
   <script>
-    let answers = new Array(20).fill(null);
+    let myAnswers = new Array(20).fill(null);
     let partnerAnswers = null;
+    let myName = localStorage.getItem('myName') || "تو";
 
-    const questions = [ /* ۲۰ سوال قبلی */ 
+    const questions = [
       {q: "قهوه یا چای؟", a: "قهوه", b: "چای"},
       {q: "سفر دریا یا کوه؟", a: "دریا", b: "کوه"},
       {q: "صبح یا شب؟", a: "صبح", b: "شب"},
@@ -52,51 +117,91 @@
       {q: "فیلم عاشقانه یا کمدی؟", a: "عاشقانه", b: "کمدی"},
       {q: "پیام صوتی یا متن طولانی؟", a: "صوتی", b: "متن"},
       {q: "غافلگیری یا برنامه‌ریزی دقیق؟", a: "غافلگیری", b: "برنامه‌ریزی"},
-      {q: "شام رستوران یا شام خونگی؟", a: "رستوران", b: "خونگی"},
+      {q: "شام رستوران یا خونگی؟", a: "رستوران", b: "خونگی"},
       {q: "دست گرفتن یا بغل کردن؟", a: "دست گرفتن", b: "بغل کردن"},
-      {q: "سفر نزدیک یا سفر طولانی؟", a: "نزدیک", b: "طولانی"},
+      {q: "سفر نزدیک یا طولانی؟", a: "نزدیک", b: "طولانی"},
       {q: "شکلات تلخ یا شیری؟", a: "تلخ", b: "شیری"},
       {q: "موسیقی آرام یا شاد؟", a: "آرام", b: "شاد"},
       {q: "پنجره باز یا بسته موقع خواب؟", a: "باز", b: "بسته"},
       {q: "تعطیلات ساحلی یا شهری؟", a: "ساحلی", b: "شهری"},
-      {q: "اول صبح بیدار شدن یا شب بیدار موندن؟", a: "اول صبح", b: "شب بیدار"},
+      {q: "اول صبح بیدار شدن یا شب بیدار؟", a: "اول صبح", b: "شب بیدار"},
       {q: "هدیه گران یا معنادار؟", a: "گران", b: "معنادار"},
       {q: "تماس تلفنی یا چت طولانی؟", a: "تلفنی", b: "چت"},
       {q: "رقصیدن یا آروم حرف زدن؟", a: "رقصیدن", b: "حرف زدن"},
       {q: "عاشق شدن سریع یا آهسته؟", a: "سریع", b: "آهسته"}
     ];
 
+    function renderProfiles() {
+      document.getElementById('myProfile').innerHTML = `
+        <img src="https://i.pravatar.cc/150?img=12" alt="">
+        <div><strong>${myName}</strong><br><small style="color:#1e88e5;cursor:pointer" onclick="editName()">ویرایش</small></div>
+      `;
+    }
+
+    function editName() {
+      const name = prompt("اسمت چیه؟", myName);
+      if (name) {
+        myName = name;
+        localStorage.setItem('myName', name);
+        renderProfiles();
+      }
+    }
+
     function renderGame() {
       let html = '';
       questions.forEach((q, i) => {
-        html += `<div class="question">
-          <strong>${i+1}. ${q.q}</strong>
-          <div class="options">
-            <button onclick="select(${i},'a')">${q.a}</button>
-            <button onclick="select(${i},'b')">${q.b}</button>
-          </div>
-        </div>`;
+        html += `
+          <div class="question">
+            <strong>${i+1}. ${q.q}</strong>
+            <div class="options">
+              <button class="option" onclick="selectAnswer(${i}, 'a')">${q.a}</button>
+              <button class="option" onclick="selectAnswer(${i}, 'b')">${q.b}</button>
+            </div>
+          </div>`;
       });
       document.getElementById('game').innerHTML = html;
     }
 
-    function select(i, choice) {
-      answers[i] = choice;
-      document.querySelectorAll('.question')[i].querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+    function selectAnswer(i, choice) {
+      myAnswers[i] = choice;
+      const buttons = document.querySelectorAll('.question')[i].querySelectorAll('button');
+      buttons.forEach(btn => btn.classList.remove('selected'));
       event.target.classList.add('selected');
-      document.getElementById('finishBtn').disabled = answers.includes(null);
+      
+      document.getElementById('finishBtn').disabled = myAnswers.includes(null);
     }
 
     function finishGame() {
-      const encoded = answers.map(a => a === 'a' ? '1' : '2').join('');
-      const link = window.location.origin + window.location.pathname + '?p=' + encoded;
-      document.getElementById('result').innerHTML = `
-        <p>لینک رو براش بفرست:</p>
-        <input value="${link}" style="width:100%; padding:12px;" readonly>
-        <button onclick="navigator.clipboard.writeText('${link}');alert('کپی شد!')" style="margin-top:10px;">کپی لینک</button>`;
+      if (myAnswers.includes(null)) return;
+
+      const encoded = myAnswers.map(a => a === 'a' ? '1' : '2').join('');
+      const link = `${window.location.origin}${window.location.pathname}?p=${encoded}`;
+
+      let html = `
+        <h2 style="text-align:center">🎉 بازی تموم شد!</h2>
+        <p style="text-align:center">این لینک رو براش بفرست:</p>
+        <input type="text" value="${link}" style="width:100%; padding:12px; border-radius:12px; border:1px solid #f48fb1;" readonly>
+        <button class="btn" onclick="copyLink('${link}')">کپی لینک</button>`;
+
+      document.getElementById('result').innerHTML = html;
+      document.getElementById('result').style.display = 'block';
     }
 
-    window.onload = renderGame;
+    function copyLink(link) {
+      navigator.clipboard.writeText(link).then(() => alert('لینک کپی شد ✅'));
+    }
+
+    // لود اولیه
+    window.onload = () => {
+      renderProfiles();
+      renderGame();
+
+      // چک کردن لینک شریک
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('p')) {
+        document.getElementById('status').innerHTML = 'نوبت توئه ❤️';
+      }
+    };
   </script>
 </body>
 </html>
