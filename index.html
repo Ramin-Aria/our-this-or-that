@@ -35,7 +35,7 @@
       <button class="btn-clear-history" onclick="clearHistory()">حذف کل تاریخچه</button>
     </div>
 
-    <div id="status">BY RAMIN • VERSION 5.1</div>
+    <div id="status">BY RAMIN • VERSION 5.2</div>
   </div>
 
   <script>
@@ -244,9 +244,9 @@
               <span class="history-role-text">طراح سوال: ${h.creator}</span>
               <span style="font-size:14px; font-weight:700; color:#4ade80;">${h.percent}% ❤️</span>
             </div>
-            <div style="display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,0.5); margin-bottom:10px;">
-              <span>بازیکن: ${h.player}</span>
-              <span>${h.dateTime}</span>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+              <span class="history-player-text">بازیکن: ${h.player}</span>
+              <span style="font-size:11px; color:rgba(255,255,255,0.5);">${h.dateTime}</span>
             </div>
             <div style="text-align: right; margin-top: 5px;">
               <span class="text-details-trigger" onclick="toggleDetails(${index})">بیشتر...</span>
