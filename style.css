@@ -1,14 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Vazirmatn:wght@400;500;700&display=swap');
 
 :root {
-  /* پلت رنگی فانتزی و رمانتیک الهام گرفته شده از تصویر پینترست */
-  --bg-overlay: rgba(26, 16, 49, 0.85); /* لایه تاریک و بنفش روی پس‌زمینه برای خوانایی متون */
-  --card-bg: rgba(38, 24, 71, 0.75);    /* بنفش شیشه‌ای برای کارت‌ها */
-  --card-border: rgba(255, 105, 180, 0.2);
-  --neon-pink: #ff65a3;                 /* صورتی پاستلی باربی */
-  --neon-purple: #9d4edd;               /* بنفش جادویی */
-  --text-bright: #ffffff;
-  --text-muted: #e2e8f0;
+  /* پلت رنگی عمیق، رمانتیک و لوکس بر اساس Amoréa Boutique */
+  --bg-dark-velvet: #1b040a;    /* زرشکی به شدت تیره و مخملی */
+  --card-dark: #290812;         /* رنگ بدنه اصلی کانتینرها */
+  --gold-luxury: #e2ba7d;       /* طلایی ملایم برای خطوط و تاکیدها */
+  --rose-crimson: #800f2f;      /* رنگ اصلی رز زرشکی */
+  --rose-light: #ffb5a7;        /* صورتی پاستلی ملایم */
+  --text-white: #f8fafc;
+  --text-gold: #f1d3a1;
 }
 
 * {
@@ -19,92 +19,83 @@
 
 body {
   margin: 0;
-  padding: 20px 16px;
+  padding: 30px 16px;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-bright);
+  color: var(--text-white);
   
-  /* تصویر پس‌زمینه آسمان شب رویایی و رمانتیک (مانند نمونه پینترست) */
-  background: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1000&auto=format&fit=crop') no-repeat center center fixed;
+  /* تصویر پس‌زمینه باکیفیت بالا از رزهای مخملی تیره و رمانتیک منطبق بر عکس نمونه */
+  background: url('https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80&w=1200&auto=format&fit=crop') no-repeat center center fixed;
   background-size: cover;
   position: relative;
 }
 
-/* ایجاد لایه رنگی رمانتیک روی عکس پس‌زمینه برای هماهنگی بیشتر */
+/* لایه زرشکی تیره روی کل صفحه برای حفظ کنتراست عالی و افزایش جذابیت بصری */
 body::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, rgba(46, 16, 101, 0.7), rgba(244, 63, 94, 0.3));
+  background: linear-gradient(135deg, rgba(27, 4, 10, 0.92), rgba(64, 7, 23, 0.88));
   z-index: 0;
 }
 
 .container {
   width: 100%;
-  max-width: 540px;
-  background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 2px solid var(--card-border);
-  border-radius: 32px;
-  padding: 35px 25px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  max-width: 550px;
+  background: var(--card-dark);
+  border: 1px solid rgba(226, 186, 125, 0.15); /* کادر بسیار ظریف طلایی */
+  border-radius: 4px; /* لبه‌های تیزتر و لوکس‌تر بر اساس تصویر */
+  padding: 45px 30px;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.7);
   position: relative;
   z-index: 1;
 }
 
-h1 {
-  background: linear-gradient(135deg, #fff, var(--neon-pink));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* فونت انگلیسی دست‌نویس لوکس برای عنوان بازی */
+.en-title {
+  font-family: 'Pinyon Script', cursive;
+  color: var(--text-gold);
   text-align: center;
-  margin: 0 0 6px 0;
-  font-size: 30px;
-  font-weight: 700;
-  filter: drop-shadow(0 2px 8px rgba(255, 101, 163, 0.3));
+  margin: 0 0 5px 0;
+  font-size: 52px;
+  font-weight: 400;
+  direction: ltr;
 }
 
 #status {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--neon-pink) !important;
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--gold-luxury);
   text-align: center;
-  margin-bottom: 30px;
-  letter-spacing: 1.5px;
+  margin-bottom: 40px;
+  opacity: 0.7;
 }
 
 /* کارت‌های سوالات */
 .question {
-  background: rgba(255, 255, 255, 0.06);
-  padding: 24px;
-  margin-bottom: 24px;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.question:hover {
-  border-color: rgba(255, 101, 163, 0.5);
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
+  border-bottom: 1px solid rgba(226, 186, 125, 0.15);
+  padding-bottom: 25px;
+  margin-bottom: 30px;
 }
 
 .question strong {
-  color: var(--text-bright);
+  color: var(--text-white);
   font-size: 18px;
   font-weight: 500;
   line-height: 1.6;
   display: block;
 }
 
-/* دکمه‌های گزینه‌ها */
+/* دکمه‌های گزینه‌ها (مینیمال آوت‌لاین بر اساس دکمه‌های Customize در عکس) */
 .options {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 15px;
+  margin-top: 18px;
 }
 
 @media (min-width: 450px) {
@@ -114,102 +105,99 @@ h1 {
 }
 
 button.option {
-  padding: 16px 20px;
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-muted);
-  border-radius: 16px;
-  font-size: 16px;
-  font-weight: 500;
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: var(--text-white);
+  border-radius: 0px; /* طراحی مینی‌مال تخت و بدون گردی دکمه‌ها */
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   text-align: center;
 }
 
 button.option:hover {
-  background: rgba(255, 101, 163, 0.15);
-  border-color: var(--neon-pink);
-  color: var(--text-bright);
-  box-shadow: 0 0 15px rgba(255, 101, 163, 0.2);
+  border-color: var(--text-gold);
+  background: rgba(226, 186, 125, 0.05);
+  color: var(--text-gold);
 }
 
 button.option.selected {
-  background: linear-gradient(135deg, var(--neon-pink), #ff85a1);
-  color: #1a0f31; /* متن تیره روی دکمه روشن برای خوانایی عالی */
-  border-color: transparent;
+  background: var(--text-white);
+  color: var(--bg-dark-velvet);
+  border-color: var(--text-white);
   font-weight: 700;
-  box-shadow: 0 0 25px rgba(255, 101, 163, 0.6);
-  transform: scale(1.02);
 }
 
-/* دکمه‌های اصلی بازی */
+/* دکمه‌های اصلی و ویژه (مثل دکمه BUILD A BOUQUET سفید و توپر نمونه) */
 .btn {
-  background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-  color: white;
+  background: var(--text-white);
+  color: var(--bg-dark-velvet);
   border: none;
-  padding: 16px 32px;
-  border-radius: 20px;
-  font-size: 17px;
+  padding: 14px 28px;
+  border-radius: 0px;
+  font-size: 14px;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   width: 100%;
-  margin: 20px 0;
+  margin: 25px 0 10px 0;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 10px 25px rgba(255, 101, 163, 0.3);
 }
 
 .btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 15px 35px rgba(255, 101, 163, 0.5);
+  background: var(--text-gold);
 }
 
 .btn:disabled {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.15);
   color: rgba(255, 255, 255, 0.3);
   cursor: not-allowed;
-  box-shadow: none;
 }
 
-/* بخش مدیریت ادمین */
-#adminButtons .btn {
-  background: rgba(255, 101, 163, 0.05);
-  color: var(--neon-pink);
-  border: 2px dashed rgba(255, 101, 163, 0.4);
-  box-shadow: none;
-  border-radius: 16px;
+/* دکمه‌های تکست یا خط‌چین بالا صفحه (بخش ادمین) */
+.btn-outline {
+  background: transparent;
+  color: var(--text-gold);
+  border: 1px solid rgba(226, 186, 125, 0.4);
+  padding: 10px 20px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-#adminButtons .btn:hover {
-  background: rgba(255, 101, 163, 0.15);
-  border-color: var(--neon-pink);
+.btn-outline:hover {
+  background: rgba(226, 186, 125, 0.1);
+  border-color: var(--text-gold);
 }
 
 /* باکس نتایج بازی */
 .result {
-  margin-top: 35px;
+  margin-top: 40px;
   padding: 25px;
-  background: rgba(255, 101, 163, 0.08);
-  border: 1px solid rgba(255, 101, 163, 0.3);
-  border-radius: 24px;
-  box-shadow: inset 0 0 20px rgba(255, 101, 163, 0.05);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed rgba(226, 186, 125, 0.3);
+  border-radius: 0px;
 }
 
-/* استایل فیلد کپی لینک */
+/* اینپوت لینک‌ها */
 input[type="text"] {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  padding: 15px;
-  color: var(--text-bright);
+  color: var(--text-white);
+  padding: 12px;
   font-size: 14px;
   direction: ltr;
   text-align: left;
-  margin-bottom: 14px;
+  margin: 10px 0 15px 0;
   width: 100%;
 }
 
 input[type="text"]:focus {
   outline: none;
-  border-color: var(--neon-pink);
-  box-shadow: 0 0 10px rgba(255, 101, 163, 0.2);
+  border-color: var(--text-gold);
 }
