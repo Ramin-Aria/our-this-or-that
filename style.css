@@ -234,16 +234,23 @@ button.option.selected {
   text-align: right;
 }
 
-/* اصلاح استایل دکمه بیشتر... (طلایی، کوچک، راست‌چین) */
+/* استایل متن طراح سوال (هم‌اندازه و همرنگ فیلد بازیکن) */
+.history-role-text {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+}
+
+/* استایل دکمه بیشتر... (طلایی دکمه‌ها و هم‌اندازه با بقیه نوشته‌ها) */
 .text-details-trigger {
-  color: var(--text-gold);
-  font-size: 11px;
+  color: var(--text-gold) !important;
+  font-size: 11px !important;
   font-weight: 500;
   cursor: pointer;
   user-select: none;
   transition: opacity 0.2s;
   display: inline-block;
-  direction: rtl; /* راست‌چین شدن کامل حروف و سه نقطه */
+  direction: rtl;
 }
 
 .text-details-trigger:hover {
