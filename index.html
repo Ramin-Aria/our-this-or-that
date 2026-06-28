@@ -232,37 +232,37 @@
     }
 
     function renderInlineHistory() {
-      const history = JSON.parse(localStorage.getItem('gameHistory')) || [];
-      const listEl = document.getElementById('inlineHistoryList');
-      
-      if (history.length === 0) {
-        listEl.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); font-size:13px; padding:15px 0;">هیچ بازی ثبت شده‌ای در تاریخچه وجود ندارد.</p>`;
-      } else {
-        listEl.innerHTML = history.map((h, index) => `
-          <div class="history-item">
-            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-              <span class="history-role-text">طراح سوال: ${h.creator}</span>
-              <span style="font-size:14px; font-weight:700; color:#4ade80;">${h.percent}% ❤️</span>
+  const history = JSON.parse(localStorage.getItem('gameHistory')) || [];
+  const listEl = document.getElementById('inlineHistoryList');
+  
+  if (history.length === 0) {
+    listEl.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); font-size:13px; padding:15px 0;">هیچ بازی ثبت شده‌ای در تاریخچه وجود ندارد.</p>`;
+  } else {
+    listEl.innerHTML = history.map((h, index) => `
+      <div class="history-item">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span class="history-role-text">طراح سوال: ${h.creator}</span>
+          <span style="font-size:14px; font-weight:700; color:#4ade80;">${h.percent}% ❤️</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span class="history-player-text">بازیکن: ${h.player}</span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.5);">${h.dateTime}</span>
+        </div>
+        <div style="text-align: right; margin-top: 5px;">
+          <span class="text-details-trigger" onclick="toggleDetails(${index})">بیشتر...</span>
+        </div>
+        <div id="details-${index}" class="history-details-box" style="display:none;">
+          ${h.details ? h.details.map((d, i) => `
+            <div style="margin-bottom:8px; font-size:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px; text-align:right;">
+              <strong style="color:#fff; display:block; margin-bottom:3px;">${i+1}. ${d.question}</strong>
+              <span style="color:var(--text-gold)">${h.creator}:</span> ${d.creatorOpt} | <span style="color:var(--text-gold)">${h.player}:</span> ${d.playerOpt} ${d.isMatch ? '🌹' : ''}
             </div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-              <span class="history-player-text">بازیکن: ${h.player}</span>
-              <span style="font-size:11px; color:rgba(255,255,255,0.5);">${h.dateTime}</span>
-            </div>
-            <div style="text-align: right; margin-top: 5px;">
-              <span class="text-details-trigger" onclick="toggleDetails(${index})">بیشتر...</span>
-            </div>
-            <div id="details-${index}" class="history-details-box" style="display:none;">
-              ${h.details ? h.details.map((d, i) => `
-                <div style="margin-bottom:8px; font-size:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px; text-align:right;">
-                  <strong style="color:#fff; display:block; margin-bottom:3px;">${i+1}. ${d.question}</strong>
-                  <span style="color:var(--text-gold)">${h.creator}:</span> ${d.creatorOpt} | <span style="color:var(--text-gold)">${h.player}:</span> ${d.playerOpt} ${d.isMatch ? '🌹' : ''}
-                </div>
-              `).join('') : '<p style="font-size:11px;color:gray;">جزئیاتی در دسترس نیست</p>'}
-            </div>
-          </div>
-        `).join('');
-      }
-    }
+          `).join('') : '<p style="font-size:11px;color:gray;">جزئیاتی در دسترس نیست</p>'}
+        </div>
+      </div>
+    `).join('');
+  }
+}
 
     function toggleDetails(index) {
       const detailsEl = document.getElementById(`details-${index}`);
