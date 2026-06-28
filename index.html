@@ -9,10 +9,11 @@
 </head>
 <body>
   <div class="container">
+    <span id="status">v4.3</span>
+    
     <h1 class="en-title">Are We a Match?</h1>
-    <p id="status">VERSION 4.2</p>
 
-    <div style="text-align:center; margin:15px 0;" id="adminButtons">
+    <div style="text-align:center; margin:20px 0 10px 0;" id="adminButtons">
       <button class="btn-admin" onclick="addNewQuestion()">BUILD A QUESTION</button>
     </div>
 
@@ -27,7 +28,7 @@
 
   <script>
     let questions = JSON.parse(localStorage.getItem('customQuestions')) || [
-      {q: "قهوه یا چای؟", options: ["قهوه", "چای"]},
+      {q: "قهوه یا چای Rez؟", options: ["قهوه", "چای"]},
       {q: "سفر دریا یا کوه؟", options: ["دریا", "کوه"]},
       {q: "صبح یا شب؟", options: ["صبح", "شب"]}
     ];
@@ -91,7 +92,7 @@
            <span onclick="deleteQuestion(${i})" class="material-symbols-outlined action-icon delete">delete</span>` : '';
 
         html += `<div class="question">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <strong>${i+1}. ${q.q}</strong>
             <div class="admin-actions">${admin}</div>
           </div>
@@ -117,13 +118,13 @@
       const encodedMyAnswers = myAnswers.join('');
       const base = window.location.origin + window.location.pathname;
 
-      let html = `<h2 class="en-title" style="font-size:38px; margin-bottom:15px;">🎉 Done by ${myName}</h2>`;
+      let html = `<h2 class="en-title" style="font-size:34px; margin-bottom:15px;">🎉 Done by ${myName}</h2>`;
 
       if (isSecondPlayer) {
         const correctCount = myAnswers.filter((a, i) => a === partnerAnswers[i]).length;
         const matchPercent = Math.round((correctCount / questions.length) * 100);
         
-        html += `<p style="font-size:24px; text-align:center; color:var(--text-gold); font-weight:700; margin-bottom:20px;">تطابق شما: ${matchPercent}% ❤️</p>`;
+        html += `<p style="font-size:22px; text-align:center; color:var(--text-gold); font-weight:700; margin-bottom:20px;">تطابق شما: ${matchPercent}% ❤️</p>`;
         
         questions.forEach((q, i) => {
           const myOpt = q.options[myAnswers[i]];
@@ -156,11 +157,11 @@
     }
 
     function showFinalResult() {
-      let html = `<h2 class="en-title" style="font-size:46px; margin-bottom:15px;">Our Story ❤️</h2>`;
+      let html = `<h2 class="en-title" style="font-size:40px; margin-bottom:15px;">Our Story ❤️</h2>`;
       
       const correctCount = myAnswers.filter((a, i) => a === partnerAnswers[i]).length;
       const matchPercent = Math.round((correctCount / questions.length) * 100);
-      html += `<p style="font-size:24px; text-align:center; color:var(--text-gold); font-weight:700; margin-bottom:25px;">تطابق نهایی: ${matchPercent}%</p>`;
+      html += `<p style="font-size:22px; text-align:center; color:var(--text-gold); font-weight:700; margin-bottom:25px;">تطابق نهایی: ${matchPercent}%</p>`;
 
       questions.forEach((q, i) => {
         const myOpt = q.options[myAnswers[i]] || "انتخاب نشده";
