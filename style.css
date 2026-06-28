@@ -2,11 +2,11 @@
 
 :root {
   --bg-dark-velvet: #1a0206;    
-  /* گرادینت قطری جدید: از گوشه بالا راست به گوشه پایین چپ */
+  /* گرادینت قطری: از گوشه بالا راست به گوشه پایین چپ */
   --card-gradient: linear-gradient(225deg, rgba(45, 4, 15, 0.85) 0%, rgba(26, 2, 6, 0.95) 100%);
   --gold-luxury: #e2ba7d;       
   --text-white: #ffffff;
-  --text-gold: #f1d3a1; 
+  --text-gold: #f1d3a1; /* رنگ طلایی لوکس اصلی */
   --border-gold-subtle: rgba(241, 211, 161, 0.35); 
 }
 
@@ -53,7 +53,7 @@ body::before {
   overflow: hidden; 
 }
 
-/* قلب اول: بزرگتر، پررنگ‌تر (شفافیت 0.045) و مایل به راست */
+/* افکت قلب اول در پس‌زمینه */
 .bg-hearts {
   position: absolute;
   top: -35px;
@@ -67,22 +67,22 @@ body::before {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
-  transform: rotate(18deg); /* زاویه کج قلب اول */
+  transform: rotate(18deg); 
 }
 
-/* قلب دوم: کوچک‌تر، بسیار کم‌رنگ‌تر (شفافیت 0.02)، با فاصله بیشتر و زاویه معکوس */
+/* افکت قلب دوم در پس‌زمینه */
 .bg-hearts::after {
   content: '';
   position: absolute;
-  top: 55px;   /* تغییر فاصله نسبت به قلب اول */
-  right: 65px; /* تغییر فاصله نسبت به قلب اول */
+  top: 55px;   
+  right: 65px; 
   width: 130px; 
   height: 130px;
-  opacity: 0.45; /* اعمال شفافیت کمتر روی خود قلب دوم برای کم‌رنگ‌تر شدن */
+  opacity: 0.45; 
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
   background-repeat: no-repeat;
   background-size: contain;
-  transform: rotate(-12deg); /* تغییر زاویه چرخش جهت متمایز شدن */
+  transform: rotate(-12deg); 
 }
 
 .en-title {
@@ -153,16 +153,18 @@ button.option:hover {
   background: rgba(241, 211, 161, 0.06);
 }
 
+/* همرنگ شدن گزینه انتخاب شده با تکست طلایی بازی */
 button.option.selected {
-  background: var(--text-white);
+  background: var(--text-gold);
   color: var(--bg-dark-velvet);
-  border-color: var(--text-white);
+  border-color: var(--text-gold);
   font-weight: 700;
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 15px rgba(241, 211, 161, 0.25);
 }
 
+/* همرنگ شدن تمام دکمه‌های اصلی و فعال با تکست طلایی بازی */
 .btn {
-  background: var(--text-white);
+  background: var(--text-gold);
   color: var(--bg-dark-velvet);
   border: none;
   padding: 14px 28px;
@@ -178,7 +180,8 @@ button.option.selected {
 }
 
 .btn:hover:not(:disabled) {
-  background: var(--text-gold);
+  background: #f7e2c2; /* طلایی کمی روشن‌تر برای افکت هاور */
+  box-shadow: 0 6px 25px rgba(241, 211, 161, 0.35);
 }
 
 .btn:disabled {
@@ -202,7 +205,8 @@ button.option.selected {
 }
 
 .btn-admin:hover {
-  background: rgba(241, 211, 161, 0.05);
+  background: var(--text-gold);
+  color: var(--bg-dark-velvet);
   border-color: var(--text-gold);
 }
 
