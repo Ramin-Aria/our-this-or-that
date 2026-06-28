@@ -1,205 +1,260 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Are We a Match? • ما دو تا</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <div class="bg-hearts"></div>
-    
-    <h1 class="en-title">Are We a Match?</h1>
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Vazirmatn:wght@400;500;700&display=swap');
 
-    <div style="text-align:center; margin:20px 0 10px 0;" id="adminButtons">
-      <button class="btn-admin" onclick="addNewQuestion()">BUILD A QUESTION</button>
-    </div>
+:root {
+  --bg-dark-velvet: #1a0206;    
+  /* گرادینت قطری: از گوشه بالا راست به گوشه پایین چپ */
+  --card-gradient: linear-gradient(225deg, rgba(45, 4, 15, 0.85) 0%, rgba(26, 2, 6, 0.95) 100%);
+  --gold-luxury: #e2ba7d;       
+  --text-white: #ffffff;
+  --text-gold: #f1d3a1; /* رنگ طلایی لوکس اصلی */
+  --border-gold-subtle: rgba(241, 211, 161, 0.35); 
+}
 
-    <div id="game"></div>
+* {
+  box-sizing: border-box;
+  font-family: 'Vazirmatn', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
 
-    <div style="text-align:center" id="finishActionArea">
-      <button class="btn" id="finishBtn" onclick="finishGame()" disabled>پایان بازی</button>
-    </div>
+body {
+  margin: 0;
+  padding: 30px 12px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-white);
+  
+  background: url('https://images.unsplash.com/photo-1546842931-886c185b4c8c?q=80&w=1400&auto=format&fit=crop') no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+}
 
-    <div id="result" class="result"></div>
+body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(20, 1, 4, 0.94), rgba(45, 4, 15, 0.85)), rgba(0, 0, 0, 0.2);
+  z-index: 0;
+}
 
-    <div id="status">BY RAMIN • VERSION 4.4</div>
-  </div>
+.container {
+  width: 100%;
+  max-width: 500px;
+  background: var(--card-gradient);
+  backdrop-filter: blur(20px); 
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-gold-subtle); 
+  border-radius: 28px; 
+  padding: 45px 25px 35px 25px; 
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 1;
+  overflow: hidden; 
+}
 
-  <script>
-    let questions = JSON.parse(localStorage.getItem('customQuestions')) || [
-      {q: "قهوه یا چای؟", options: ["قهوه", "چای"]}
-    ];
+/* افکت قلب اول در پس‌زمینه */
+.bg-hearts {
+  position: absolute;
+  top: -35px;
+  right: -45px;
+  width: 250px; 
+  height: 250px;
+  opacity: 0.045; 
+  pointer-events: none;
+  z-index: -1;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  transform: rotate(18deg); 
+}
 
-    let myAnswers = [];
-    let myName = "";
-    let partnerName = "";
-    let partnerAnswers = null;
-    let isSecondPlayer = false;
-    let isResultMode = false;
+/* افکت قلب دوم در پس‌زمینه */
+.bg-hearts::after {
+  content: '';
+  position: absolute;
+  top: 55px;   
+  right: 65px; 
+  width: 130px; 
+  height: 130px;
+  opacity: 0.45; 
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: rotate(-12deg); 
+}
 
-    function loadFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      const p = params.get('p');
-      const r = params.get('r');
-      const pn = params.get('pn');
-      const p1n = params.get('p1n');
+.en-title {
+  font-family: 'Pinyon Script', cursive;
+  color: var(--text-gold);
+  text-align: center;
+  margin: 5px 0;
+  font-size: clamp(34px, 9.5vw, 54px); 
+  font-weight: 400;
+  direction: ltr;
+  text-shadow: 0 2px 10px rgba(241, 211, 161, 0.15);
+}
 
-      if (p1n) partnerName = decodeURIComponent(p1n);
+#status {
+  text-align: center !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 2px !important;
+  color: var(--text-gold) !important;
+  opacity: 0.4 !important;
+  margin-top: 35px !important;
+  display: block !important;
+  position: static !important; 
+}
 
-      if (r) {
-        isResultMode = true;
-        partnerAnswers = p ? p.split('').map(Number) : null;
-        myAnswers = r.split('').map(Number);
-        if (pn) myName = decodeURIComponent(pn);
-        
-        // مخفی کردن دکمه مدیریت و دکمه پایان بازی در حالت نتیجه نهایی
-        document.getElementById('adminButtons').style.display = 'none';
-        document.getElementById('finishActionArea').style.display = 'none';
-        
-        showFinalResult();
-      } else if (p) {
-        partnerAnswers = p.split('').map(Number);
-        isSecondPlayer = true;
-        document.getElementById('adminButtons').style.display = 'none';
-      }
-    }
+.question {
+  border-bottom: 1px solid rgba(241, 211, 161, 0.1);
+  padding-bottom: 22px;
+  margin-bottom: 26px;
+}
 
-    function addNewQuestion() {
-      const q = prompt("سوال جدید:");
-      if (!q) return;
-      const options = [];
-      for (let i = 1; i <= 4; i++) {
-        const opt = prompt(`گزینه ${i}:`);
-        if (!opt) break;
-        options.push(opt);
-      }
-      if (options.length < 2) return alert("حداقل ۲ گزینه!");
-      questions.push({q, options});
-      localStorage.setItem('customQuestions', JSON.stringify(questions));
-      renderGame();
-    }
+.question strong {
+  color: var(--text-white);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.6;
+  display: block;
+}
 
-    function renderGame() {
-      if (isResultMode) return;
-      let html = '';
-      myAnswers = new Array(questions.length).fill(null);
+.options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
 
-      questions.forEach((q, i) => {
-        let opts = q.options.map((opt, j) => 
-          `<button class="option" onclick="selectAnswer(${i}, ${j})">${opt}</button>`
-        ).join('');
+@media (min-width: 420px) {
+  .options {
+    grid-template-columns: 1fr 1fr;
+  }
+}
 
-        let admin = !isSecondPlayer ? 
-          `<span onclick="editQuestion(${i})" class="material-symbols-outlined action-icon">edit</span>
-           <span onclick="deleteQuestion(${i})" class="material-symbols-outlined action-icon delete">delete</span>` : '';
+button.option {
+  padding: 13px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-white);
+  border-radius: 14px; 
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
 
-        html += `<div class="question">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <strong>${i+1}. ${q.q}</strong>
-            <div class="admin-actions">${admin}</div>
-          </div>
-          <div class="options">${opts}</div>
-        </div>`;
-      });
-      document.getElementById('game').innerHTML = html;
-    }
+button.option:hover {
+  border-color: var(--text-gold);
+  background: rgba(241, 211, 161, 0.06);
+}
 
-    function selectAnswer(qIndex, optIndex) {
-      myAnswers[qIndex] = optIndex;
-      const buttons = document.querySelectorAll('.question')[qIndex].querySelectorAll('button');
-      buttons.forEach((b, idx) => b.classList.toggle('selected', idx === optIndex));
-      document.getElementById('finishBtn').disabled = myAnswers.includes(null);
-    }
+/* همرنگ شدن گزینه انتخاب شده با تکست طلایی بازی */
+button.option.selected {
+  background: var(--text-gold);
+  color: var(--bg-dark-velvet);
+  border-color: var(--text-gold);
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(241, 211, 161, 0.25);
+}
 
-    function finishGame() {
-      if (myAnswers.includes(null)) return;
+/* همرنگ شدن تمام دکمه‌های اصلی و فعال با تکست طلایی بازی */
+.btn {
+  background: var(--text-gold);
+  color: var(--bg-dark-velvet);
+  border: none;
+  padding: 14px 28px;
+  border-radius: 16px; 
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  width: 100%;
+  margin: 20px 0 5px 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
 
-      myName = prompt("اسمتو وارد کن:", myName || "");
-      if (!myName) return;
+.btn:hover:not(:disabled) {
+  background: #f7e2c2; /* طلایی کمی روشن‌تر برای افکت هاور */
+  box-shadow: 0 6px 25px rgba(241, 211, 161, 0.35);
+}
 
-      const encodedMyAnswers = myAnswers.join('');
-      const base = window.location.origin + window.location.pathname;
+.btn:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.25);
+  cursor: not-allowed;
+  box-shadow: none;
+}
 
-      let html = `<h2 class="en-title" style="font-size:34px; margin-bottom:15px;">🎉 Done by ${myName}</h2>`;
+.btn-admin {
+  background: transparent;
+  color: var(--text-gold);
+  border: 1px solid rgba(241, 211, 161, 0.25);
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-      if (isSecondPlayer) {
-        const correctCount = myAnswers.filter((a, i) => a === partnerAnswers[i]).length;
-        const matchPercent = Math.round((correctCount / questions.length) * 100);
-        
-        html += `<p style="font-size:22px; text-align:center; color:var(--text-gold); font-weight:700; margin-bottom:20px;">تطابق شما: ${matchPercent}% ❤️</p>`;
-        
-        questions.forEach((q, i) => {
-          const myOpt = q.options[myAnswers[i]];
-          const partnerOpt = q.options[partnerAnswers[i]];
-          html += `<p style="border-bottom:1px solid rgba(241, 211, 161, 0.1); padding-bottom:10px;">
-            <strong>${i+1}. ${q.q}</strong><br>
-            <span style="color:var(--text-gold)">${myName}:</span> ${myOpt} | <span style="color:var(--text-gold)">${partnerName || "نفر اول"}:</span> ${partnerOpt} ${myAnswers[i] === partnerAnswers[i] ? '🌹' : ''}
-          </p>`;
-        });
+.btn-admin:hover {
+  background: var(--text-gold);
+  color: var(--bg-dark-velvet);
+  border-color: var(--text-gold);
+}
 
-        const encodedPartnerAnswers = partnerAnswers.join('');
-        const resultLink = `${base}?p=${encodedPartnerAnswers}&r=${encodedMyAnswers}&p1n=${encodeURIComponent(partnerName)}&pn=${encodeURIComponent(myName)}`;
-        
-        html += `<p style="margin-top:25px; color:rgba(255,255,255,0.6);">لینک نتیجه نهایی برای فرستادن به ${partnerName || 'نفر اول'}:</p>`;
-        html += `<input type="text" value="${resultLink}" readonly>`;
-        html += `<button class="btn" onclick="copyLink('${resultLink}')">کپی لینک نتیجه</button>`;
-      } else {
-        const shareLink = `${base}?p=${encodedMyAnswers}&p1n=${encodeURIComponent(myName)}`;
-        html += `<p style="color:rgba(255,255,255,0.6); margin-top:20px;">لینک بازی را برای طرف مقابل بفرستید:</p><input type="text" value="${shareLink}" readonly>`;
-        html += `<button class="btn" onclick="copyLink('${shareLink}')">کپی لینک بازی</button>`;
-      }
+.admin-actions {
+  display: flex;
+  gap: 14px;
+}
 
-      document.getElementById('result').innerHTML = html;
-      document.getElementById('result').style.display = 'block';
-      document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-    }
+.action-icon {
+  font-family: 'Material Symbols Outlined' !important;
+  font-size: 19px;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s, transform 0.2s;
+}
 
-    function copyLink(link) {
-      navigator.clipboard.writeText(link).then(() => alert('✅ لینک کپی شد'));
-    }
+.action-icon:hover {
+  color: var(--text-gold);
+  transform: scale(1.1);
+}
 
-    function showFinalResult() {
-      let html = `<h2 class="en-title" style="font-size:40px; margin-bottom:15px;">Our Story ❤️</h2>`;
-      
-      const correctCount = myAnswers.filter((a, i) => a === partnerAnswers[i]).length;
-      const matchPercent = Math.round((correctCount / questions.length) * 100);
-      html += `<p style="font-size:22px; text-align:center; color:var(--text-gold); font-weight:700; margin-bottom:25px;">تطابق نهایی: ${matchPercent}%</p>`;
+.action-icon.delete:hover {
+  color: #f87171;
+}
 
-      questions.forEach((q, i) => {
-        const myOpt = q.options[myAnswers[i]] || "انتخاب نشده";
-        const partnerOpt = q.options[partnerAnswers[i]] || "انتخاب نشده";
-        html += `<p style="border-bottom:1px solid rgba(241, 211, 161, 0.1); padding-bottom:12px;">
-          <strong>${i+1}. ${q.q}</strong><br>
-          <span style="color:var(--text-gold)">${partnerName || "نفر اول"}:</span> ${partnerOpt} | <span style="color:var(--text-gold)">${myName || "نفر دوم"}:</span> ${myOpt} ${myAnswers[i] === partnerAnswers[i] ? '🌹' : ''}
-        </p>`;
-      });
-      document.getElementById('result').innerHTML = html;
-      document.getElementById('result').style.display = 'block';
-    }
+.result {
+  margin-top: 35px;
+  padding: 25px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(241, 211, 161, 0.1);
+  border-radius: 18px;
+}
 
-    function editQuestion(index) {
-      const currentQ = questions[index];
-      const newQ = prompt("ویرایش سوال:", currentQ.q);
-      if (!newQ) return;
-      currentQ.q = newQ;
-      localStorage.setItem('customQuestions', JSON.stringify(questions));
-      renderGame();
-    }
+input[type="text"] {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-white);
+  padding: 13px;
+  font-size: 13px;
+  direction: ltr;
+  text-align: left;
+  margin: 10px 0 15px 0;
+  width: 100%;
+  border-radius: 12px;
+}
 
-    function deleteQuestion(index) {
-      if (!confirm("آیا از حذف این سوال مطمئن هستید؟")) return;
-      questions.splice(index, 1);
-      localStorage.setItem('customQuestions', JSON.stringify(questions));
-      renderGame();
-    }
-
-    window.onload = () => {
-      loadFromUrl();
-      renderGame();
-    };
-  </script>
-</body>
-</html>
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--text-gold);
+}
