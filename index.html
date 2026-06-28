@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>این یا آن • ما دو تا ❤️ v3.8</title>
+  <title>این یا آن • ما دو تا • v3.8.1</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h1>🎲 این یا آن • ما دو تا</h1>
-    <p style="text-align:center;color:#c2185b" id="status">نسخه ۳.۸</p>
+    <p style="text-align:center;color:#c2185b" id="status">نسخه ۳.۸.۱</p>
 
     <div style="text-align:center; margin:15px 0;" id="adminButtons">
       <button class="btn" onclick="addNewQuestion()" style="background:#1e88e5; width:auto; padding:12px 24px;">+ سوال جدید</button>
@@ -43,15 +43,20 @@
       const p = params.get('p');
       const r = params.get('r');
       const pn = params.get('pn');
+      const p1n = params.get('p1n'); // نام نفر اول
+
+      if (p1n) partnerName = decodeURIComponent(p1n);
 
       if (r) {
+        // حالت نمایش نتیجه نهایی
         isResultMode = true;
-        partnerAnswers = p ? p.split('').map(c => c==='1'?'a':'b') : null;
-        myAnswers = r.split('').map(c => c==='1'?'a':'b');
-        if (pn) partnerName = decodeURIComponent(pn);
+        partnerAnswers = p ? p.split('').map(Number) : null;
+        myAnswers = r.split('').map(Number);
+        if (pn) myName = decodeURIComponent(pn); // نام نفر دوم
         showFinalResult();
       } else if (p) {
-        partnerAnswers = p.split('').map(c => c==='1'?'a':'b');
+        // حالت بازی کردن نفر دوم
+        partnerAnswers = p.split('').map(Number);
         isSecondPlayer = true;
         document.getElementById('adminButtons').style.display = 'none';
       }
@@ -110,29 +115,36 @@
       myName = prompt("اسمتو وارد کن:", myName || "");
       if (!myName) return;
 
-      const encoded = myAnswers.map(a => a === 0 || a === '0' ? '1' : '2').join('');
+      const encodedMyAnswers = myAnswers.join('');
       const base = window.location.origin + window.location.pathname;
 
       let html = `<h2 style="text-align:center">🎉 بازی توسط ${myName} تموم شد!</h2>`;
 
       if (isSecondPlayer) {
-        let match = 0;
-        html += `<p style="font-size:26px;text-align:center"><strong>تطابق: ${Math.round(myAnswers.filter((a,i) => a === partnerAnswers[i]).length / 20 * 100)}%</strong></p>`;
+        // محاسبه درصد تطابق بر اساس تعداد واقعی سوالات
+        const correctCount = myAnswers.filter((a, i) => a === partnerAnswers[i]).length;
+        const matchPercent = Math.round((correctCount / questions.length) * 100);
         
-        questions.forEach((q,i) => {
+        html += `<p style="font-size:26px;text-align:center"><strong>تطابق: ${matchPercent}%</strong></p>`;
+        
+        questions.forEach((q, i) => {
           const myOpt = q.options[myAnswers[i]];
           const partnerOpt = q.options[partnerAnswers[i]];
-          html += `<p><strong>${i+1}. ${q.q}</strong><br>${myName}: ${myOpt} | ${partnerName || "طرف مقابل"}: ${partnerOpt} ${myAnswers[i]===partnerAnswers[i]?'❤️':''}</p>`;
+          html += `<p><strong>${i+1}. ${q.q}</strong><br>${myName}: ${myOpt} | ${partnerName || "نفر اول"}: ${partnerOpt} ${myAnswers[i] === partnerAnswers[i] ? '❤️' : ''}</p>`;
         });
 
-        const resultLink = `${base}?p=${partnerAnswers.map(a => a===0||a==='0'?'1':'2').join('')}&r=${encoded}&pn=${encodeURIComponent(myName)}`;
-        html += `<p style="margin-top:20px">لینک نتیجه:</p>`;
+        // ساخت لینک نتیجه نهایی برای فرستادن دوباره به نفر اول
+        const encodedPartnerAnswers = partnerAnswers.join('');
+        const resultLink = `${base}?p=${encodedPartnerAnswers}&r=${encodedMyAnswers}&p1n=${encodeURIComponent(partnerName)}&pn=${encodeURIComponent(myName)}`;
+        
+        html += `<p style="margin-top:20px">لینک نتیجه نهایی (برای فرستادن به ${partnerName || 'نفر اول'}):</p>`;
         html += `<input type="text" value="${resultLink}" style="width:100%;padding:12px" readonly>`;
         html += `<button class="btn" onclick="copyLink('${resultLink}')">کپی لینک نتیجه</button>`;
       } else {
-        const shareLink = `${base}?p=${encoded}`;
-        html += `<p>لینک بازی:</p><input value="${shareLink}" style="width:100%;padding:12px" readonly>`;
-        html += `<button class="btn" onclick="copyLink('${shareLink}')">کپی لینک</button>`;
+        // نفر اول بازی را تمام کرده و لینک دعوت می‌سازد
+        const shareLink = `${base}?p=${encodedMyAnswers}&p1n=${encodeURIComponent(myName)}`;
+        html += `<p>لینک بازی را برای طرف مقابل بفرستید:</p><input value="${shareLink}" style="width:100%;padding:12px" readonly>`;
+        html += `<button class="btn" onclick="copyLink('${shareLink}')">کپی لینک بازی</button>`;
       }
 
       document.getElementById('result').innerHTML = html;
@@ -145,13 +157,35 @@
 
     function showFinalResult() {
       let html = `<h2 style="text-align:center">نتیجه نهایی ❤️</h2>`;
-      questions.forEach((q,i) => {
-        const myOpt = q.options[myAnswers[i]];
-        const partnerOpt = q.options[partnerAnswers[i]];
-        html += `<p><strong>${i+1}. ${q.q}</strong><br>تو: ${myOpt} | ${partnerName || "طرف مقابل"}: ${partnerOpt}</p>`;
+      
+      const correctCount = myAnswers.filter((a, i) => a === partnerAnswers[i]).length;
+      const matchPercent = Math.round((correctCount / questions.length) * 100);
+      html += `<p style="font-size:26px;text-align:center"><strong>تطابق: ${matchPercent}%</strong></p>`;
+
+      questions.forEach((q, i) => {
+        const myOpt = q.options[myAnswers[i]] || "انتخاب نشده";
+        const partnerOpt = q.options[partnerAnswers[i]] || "انتخاب نشده";
+        html += `<p><strong>${i+1}. ${q.q}</strong><br>${partnerName || "نفر اول"}: ${partnerOpt} | ${myName || "نفر دوم"}: ${myOpt} ${myAnswers[i] === partnerAnswers[i] ? '❤️' : ''}</p>`;
       });
       document.getElementById('result').innerHTML = html;
       document.getElementById('result').style.display = 'block';
+    }
+
+    // توابع ادیت و حذف که در رندر استفاده شده‌اند اما در کد اصلی‌تان بدنه نداشتند
+    function editQuestion(index) {
+      const currentQ = questions[index];
+      const newQ = prompt("ویرایش سوال:", currentQ.q);
+      if (!newQ) return;
+      currentQ.q = newQ;
+      localStorage.setItem('customQuestions', JSON.stringify(questions));
+      renderGame();
+    }
+
+    function deleteQuestion(index) {
+      if (!confirm("آیا از حذف این سوال مطمئن هستید؟")) return;
+      questions.splice(index, 1);
+      localStorage.setItem('customQuestions', JSON.stringify(questions));
+      renderGame();
     }
 
     window.onload = () => {
