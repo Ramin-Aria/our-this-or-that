@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>این یا آن • ما دو تا ❤️ v2.1</title>
+  <title>این یا آن • ما دو تا ❤️ v3.0</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <div style="display:flex; justify-content:space-between; margin-bottom:25px; font-size:18px;">
+    <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
       <div id="myProfile"></div>
-      <div id="partnerProfile" style="opacity:0.75;"></div>
+      <div id="partnerProfile"></div>
     </div>
 
     <h1>🎲 این یا آن • ما دو تا</h1>
-    <p style="text-align:center; color:#c2185b; margin-bottom:20px;" id="status">۲۰ سوال رمانتیک - v2.1</p>
+    <p style="text-align:center;color:#c2185b" id="status">نسخه ۳.۰ - سوال سفارشی</p>
 
-    <div class="progress"><div class="progress-bar" id="progress"></div></div>
+    <div style="text-align:center; margin:15px 0;">
+      <button class="btn" onclick="showQuestionEditor()" style="background:#1e88e5;">+ اضافه کردن سوال جدید</button>
+    </div>
 
     <div id="game"></div>
 
@@ -28,102 +30,78 @@
   </div>
 
   <script>
-    let myName = localStorage.getItem('myName') || "من 🧔";
-    let partnerName = localStorage.getItem('partnerName') || "اون 💄";
+    let questions = JSON.parse(localStorage.getItem('customQuestions')) || [
+      {q:"قهوه یا چای؟", options:["قهوه", "چای"]},
+      {q:"سفر دریا یا کوه؟", options:["دریا", "کوه"]},
+      // می‌تونی اینجا سوال‌های پیش‌فرض بیشتری بذاری
+    ];
 
-    let myAnswers = new Array(20).fill(null);
+    let myAnswers = [];
     let partnerAnswers = null;
     let isSecondPlayer = false;
 
-    const questions = [
-      {q:"قهوه یا چای؟",a:"قهوه",b:"چای"},{q:"سفر دریا یا کوه؟",a:"دریا",b:"کوه"},
-      {q:"صبح یا شب؟",a:"صبح",b:"شب"},{q:"بوسه روی لب یا پیشونی؟",a:"لب",b:"پیشونی"},
-      {q:"هدیه دادن یا گرفتن؟",a:"دادن",b:"گرفتن"},{q:"فیلم عاشقانه یا کمدی؟",a:"عاشقانه",b:"کمدی"},
-      {q:"پیام صوتی یا متن؟",a:"صوتی",b:"متن"},{q:"غافلگیری یا برنامه‌ریزی؟",a:"غافلگیری",b:"برنامه‌ریزی"},
-      {q:"شام رستوران یا خونگی؟",a:"رستوران",b:"خونگی"},{q:"دست گرفتن یا بغل؟",a:"دست گرفتن",b:"بغل"},
-      {q:"سفر نزدیک یا طولانی؟",a:"نزدیک",b:"طولانی"},{q:"شکلات تلخ یا شیری؟",a:"تلخ",b:"شیری"},
-      {q:"موسیقی آرام یا شاد؟",a:"آرام",b:"شاد"},{q:"پنجره باز یا بسته؟",a:"باز",b:"بسته"},
-      {q:"ساحلی یا شهری؟",a:"ساحلی",b:"شهری"},{q:"اول صبح یا شب بیدار؟",a:"اول صبح",b:"شب بیدار"},
-      {q:"هدیه گران یا معنادار؟",a:"گران",b:"معنادار"},{q:"تلفنی یا چت؟",a:"تلفنی",b:"چت"},
-      {q:"رقصیدن یا حرف زدن؟",a:"رقصیدن",b:"حرف زدن"},{q:"عاشق شدن سریع یا آهسته؟",a:"سریع",b:"آهسته"}
-    ];
-
     function renderProfiles() {
-      document.getElementById('myProfile').innerHTML = `<strong>${myName}</strong>`;
-      document.getElementById('partnerProfile').innerHTML = `<strong>${partnerName}</strong>`;
+      // همان کد قبلی پروفایل
+      document.getElementById('myProfile').innerHTML = `<strong>${localStorage.getItem('myName') || "من 🧔"}</strong>`;
+      document.getElementById('partnerProfile').innerHTML = `<strong>${localStorage.getItem('partnerName') || "اون 💄"}</strong>`;
     }
 
-    function loadFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      const p = params.get('p');
-      if (p && p.length === 20) {
-        partnerAnswers = p.split('').map(c => c === '1' ? 'a' : 'b');
-        isSecondPlayer = true;
-        document.getElementById('status').innerHTML = `نوبت ${partnerName} ❤️`;
+    function showQuestionEditor() {
+      const q = prompt("سوال رو بنویس:");
+      if (!q) return;
+
+      const options = [];
+      for (let i = 1; i <= 4; i++) {
+        const opt = prompt(`گزینه ${i} (خالی بگذار اگر تموم شد):`);
+        if (!opt) break;
+        options.push(opt);
       }
+
+      if (options.length < 2) {
+        alert("حداقل ۲ گزینه نیاز است!");
+        return;
+      }
+
+      questions.push({q, options});
+      localStorage.setItem('customQuestions', JSON.stringify(questions));
+      alert("سوال جدید اضافه شد ✅");
+      renderGame();
     }
 
     function renderGame() {
       let html = '';
+      myAnswers = new Array(questions.length).fill(null);
+
       questions.forEach((q, i) => {
+        let optsHtml = '';
+        q.options.forEach((opt, j) => {
+          optsHtml += `<button class="option" onclick="selectAnswer(${i}, ${j})">${opt}</button>`;
+        });
         html += `<div class="question">
           <strong>${i+1}. ${q.q}</strong>
-          <div class="options">
-            <button class="option" onclick="selectAnswer(${i}, 'a')">${q.a}</button>
-            <button class="option" onclick="selectAnswer(${i}, 'b')">${q.b}</button>
-          </div>
+          <div class="options">${optsHtml}</div>
         </div>`;
       });
       document.getElementById('game').innerHTML = html;
     }
 
-    function selectAnswer(i, choice) {
-      myAnswers[i] = choice;
-      const qDiv = document.querySelectorAll('.question')[i];
-      qDiv.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
-      event.target.classList.add('selected');
+    function selectAnswer(qIndex, optionIndex) {
+      myAnswers[qIndex] = optionIndex;
+      const qDiv = document.querySelectorAll('.question')[qIndex];
+      qDiv.querySelectorAll('button').forEach((b, idx) => {
+        b.classList.toggle('selected', idx === optionIndex);
+      });
       document.getElementById('finishBtn').disabled = myAnswers.includes(null);
     }
 
     function finishGame() {
       if (myAnswers.includes(null)) return;
-
-      const encoded = myAnswers.map(a => a === 'a' ? '1' : '2').join('');
-      const base = window.location.origin + window.location.pathname;
-
-      let html = `<h2 style="text-align:center">🎉 بازی تموم شد!</h2>`;
-
-      if (isSecondPlayer) {
-        let match = 0;
-        html += `<p style="font-size:26px; text-align:center"><strong>تطابق: ${Math.round(myAnswers.filter((a,i) => a === partnerAnswers[i]).length / 20 * 100)}%</strong></p>`;
-        
-        questions.forEach((q,i) => {
-          const my = myAnswers[i]==='a' ? q.a : q.b;
-          const partner = partnerAnswers[i]==='a' ? q.a : q.b;
-          html += `<p><strong>${i+1}. ${q.q}</strong><br>${myName}: ${my} | ${partnerName}: ${partner} ${myAnswers[i]===partnerAnswers[i] ? '❤️' : ''}</p>`;
-        });
-
-        const resultLink = `${base}?p=${partnerAnswers.map(a => a==='a'?'1':'2').join('')}&r=${encoded}`;
-        html += `<p style="margin-top:25px">لینک نتیجه رو براش بفرست:</p>`;
-        html += `<input type="text" value="${resultLink}" style="width:100%; padding:12px; font-size:14px;" readonly>`;
-        html += `<button class="btn" onclick="copyLink('${resultLink}')">کپی لینک نتیجه</button>`;
-      } else {
-        const shareLink = `${base}?p=${encoded}`;
-        html += `<p>لینک بازی:</p><input value="${shareLink}" style="width:100%;padding:12px" readonly>`;
-        html += `<button class="btn" onclick="copyLink('${shareLink}')">کپی لینک</button>`;
-      }
-
-      document.getElementById('result').innerHTML = html;
-      document.getElementById('result').style.display = 'block';
-    }
-
-    function copyLink(link) {
-      navigator.clipboard.writeText(link).then(() => alert('✅ لینک کپی شد'));
+      alert("بازی تموم شد! (لینک اشتراکی در نسخه بعدی کامل میشه)");
+      // بعداً لینک اشتراکی رو اینجا اضافه می‌کنیم
     }
 
     window.onload = () => {
       renderProfiles();
-      loadFromUrl();
       renderGame();
     };
   </script>
