@@ -3,24 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>این یا آن • v5ما دو تا ❤️</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
-    body { font-family: 'Vazirmatn', sans-serif; background: linear-gradient(135deg, #fff0f5, #e0f2fe); margin:0; padding:12px; min-height:100vh; }
-    .container { max-width: 720px; margin:auto; background:white; border-radius:28px; padding:25px; box-shadow:0 20px 60px rgba(233,30,99,0.15); }
-    h1 { color:#e91e63; text-align:center; margin:15px 0; }
-    .question { background:#fff0f5; padding:20px; margin:16px 0; border-radius:20px; }
-    .options { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
-    @media (min-width:600px) { .options { flex-direction:row; } }
-    button.option { padding:18px; border:2px solid #f8bbd0; background:white; border-radius:16px; font-size:17px; cursor:pointer; transition:all 0.3s; }
-    button.option.selected { background:#e91e63; color:white; border-color:#e91e63; transform:scale(1.04); }
-    .btn { background:#e91e63; color:white; border:none; padding:16px; border-radius:50px; font-size:17px; width:100%; margin:12px 0; cursor:pointer; }
-    .result { margin-top:30px; padding:25px; background:#f0f4c3; border-radius:24px; display:none; }
-  </style>
+  <title>این یا آن • ما دو تا ❤️</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>🎲 این یا آن v6 • ما دو تا</h1>
+    <h1>🎲 این یا آن • ما دو تا</h1>
     <p style="text-align:center;color:#c2185b" id="status">۲۰ سوال رمانتیک</p>
 
     <div id="game"></div>
@@ -36,6 +24,7 @@
     let myAnswers = new Array(20).fill(null);
     let partnerAnswers = null;
     let isSecondPlayer = false;
+    let isResultMode = false;
 
     const questions = [
       {q:"قهوه یا چای؟",a:"قهوه",b:"چای"},{q:"سفر دریا یا کوه؟",a:"دریا",b:"کوه"},
@@ -50,17 +39,27 @@
       {q:"رقصیدن یا حرف زدن؟",a:"رقصیدن",b:"حرف زدن"},{q:"عاشق شدن سریع یا آهسته؟",a:"سریع",b:"آهسته"}
     ];
 
-    function loadDataFromUrl() {
+    function loadFromUrl() {
       const params = new URLSearchParams(window.location.search);
       const p = params.get('p');
-      if (p && p.length === 20) {
-        partnerAnswers = p.split('').map(c => c === '1' ? 'a' : 'b');
+      const r = params.get('r');
+
+      if (r) {
+        // حالت نتیجه نهایی
+        isResultMode = true;
+        partnerAnswers = p ? p.split('').map(c => c==='1'?'a':'b') : null;
+        myAnswers = r.split('').map(c => c==='1'?'a':'b');
+        showFinalResult();
+      } else if (p) {
+        // حالت بازی نفر دوم
+        partnerAnswers = p.split('').map(c => c==='1'?'a':'b');
         isSecondPlayer = true;
-        document.getElementById('status').innerHTML = 'نوبت توئه ❤️ بازی کن';
+        document.getElementById('status').innerHTML = 'نوبت توئه ❤️';
       }
     }
 
     function renderGame() {
+      if (isResultMode) return;
       let html = '';
       questions.forEach((q,i) => {
         html += `<div class="question">
@@ -90,29 +89,44 @@
 
       let html = `<h2 style="text-align:center">🎉 بازی تموم شد!</h2>`;
 
-      if (isSecondPlayer && partnerAnswers) {
-        // نفر دوم - نمایش نتیجه + تولید لینک برای نفر اول
+      if (isSecondPlayer) {
+        // نفر دوم
         let match = 0;
-        html += `<p style="font-size:26px;text-align:center"><strong>تطابق ما: ${Math.round(myAnswers.filter((a,i)=>a===partnerAnswers[i]).length / 20 * 100)}%</strong></p>`;
+        html += `<p style="font-size:26px;text-align:center"><strong>تطابق: ${Math.round(myAnswers.filter((a,i)=>a===partnerAnswers[i]).length/20*100)}%</strong></p>`;
         
         questions.forEach((q,i) => {
-          const my = myAnswers[i]==='a' ? q.a : q.b;
-          const partner = partnerAnswers[i]==='a' ? q.a : q.b;
-          html += `<p><strong>${i+1}. ${q.q}</strong><br>تو: ${my} | اون: ${partner} ${myAnswers[i]===partnerAnswers[i]?'❤️':''}</p>`;
+          const myAns = myAnswers[i]==='a' ? q.a : q.b;
+          const partnerAns = partnerAnswers[i]==='a' ? q.a : q.b;
+          html += `<p><strong>${i+1}. ${q.q}</strong><br>تو: ${myAns} | اون: ${partnerAns} ${myAnswers[i]===partnerAnswers[i]?'❤️':''}</p>`;
         });
 
-        // لینک نتیجه برای نفر اول
-        const resultLink = `${base}?p=${partnerAnswers.map(a => a==='a'?'1':'2').join('')}&r=${encodedMy}`;
+        const resultLink = `${base}?p=${partnerAnswers.map(a=>a==='a'?'1':'2').join('')}&r=${encodedMy}`;
         html += `<p style="margin-top:20px">لینک نتیجه رو برای طرف مقابل بفرست:</p>`;
-        html += `<input type="text" value="${resultLink}" style="width:100%;padding:12px;font-size:14px" readonly>`;
+        html += `<input type="text" value="${resultLink}" style="width:100%;padding:12px" readonly>`;
         html += `<button class="btn" onclick="copyLink('${resultLink}')">کپی لینک نتیجه</button>`;
-      } else if (!isSecondPlayer) {
+      } else {
         // نفر اول
         const shareLink = `${base}?p=${encodedMy}`;
-        html += `<p>لینک بازی رو بفرست:</p><input value="${shareLink}" style="width:100%;padding:12px" readonly>`;
+        html += `<p>لینک بازی:</p><input value="${shareLink}" style="width:100%;padding:12px" readonly>`;
         html += `<button class="btn" onclick="copyLink('${shareLink}')">کپی لینک</button>`;
       }
 
+      document.getElementById('result').innerHTML = html;
+      document.getElementById('result').style.display = 'block';
+    }
+
+    function showFinalResult() {
+      let html = `<h2 style="text-align:center">نتیجه نهایی ❤️</h2>`;
+      let match = 0;
+
+      questions.forEach((q,i) => {
+        const my = myAnswers[i]==='a' ? q.a : q.b;
+        const partner = partnerAnswers[i]==='a' ? q.a : q.b;
+        if (myAnswers[i] === partnerAnswers[i]) match++;
+        html += `<p><strong>${i+1}. ${q.q}</strong><br>تو: ${my} | اون: ${partner} ${myAnswers[i]===partnerAnswers[i]?'❤️':''}</p>`;
+      });
+
+      html += `<p style="font-size:24px;text-align:center"><strong>تطابق: ${Math.round(match/20*100)}%</strong></p>`;
       document.getElementById('result').innerHTML = html;
       document.getElementById('result').style.display = 'block';
     }
@@ -122,7 +136,7 @@
     }
 
     window.onload = () => {
-      loadDataFromUrl();
+      loadFromUrl();
       renderGame();
     };
   </script>
