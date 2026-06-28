@@ -2,11 +2,10 @@
 
 :root {
   --bg-dark-velvet: #1a0206;    
-  /* گرادینت قطری: از گوشه بالا راست به گوشه پایین چپ */
   --card-gradient: linear-gradient(225deg, rgba(45, 4, 15, 0.85) 0%, rgba(26, 2, 6, 0.95) 100%);
   --gold-luxury: #e2ba7d;       
   --text-white: #ffffff;
-  --text-gold: #f1d3a1; /* رنگ طلایی لوکس اصلی */
+  --text-gold: #f1d3a1; 
   --border-gold-subtle: rgba(241, 211, 161, 0.35); 
 }
 
@@ -53,7 +52,6 @@ body::before {
   overflow: hidden; 
 }
 
-/* افکت قلب اول در پس‌زمینه */
 .bg-hearts {
   position: absolute;
   top: -35px;
@@ -70,7 +68,6 @@ body::before {
   transform: rotate(18deg); 
 }
 
-/* افکت قلب دوم در پس‌زمینه */
 .bg-hearts::after {
   content: '';
   position: absolute;
@@ -153,7 +150,6 @@ button.option:hover {
   background: rgba(241, 211, 161, 0.06);
 }
 
-/* همرنگ شدن گزینه انتخاب شده با تکست طلایی بازی */
 button.option.selected {
   background: var(--text-gold);
   color: var(--bg-dark-velvet);
@@ -162,7 +158,6 @@ button.option.selected {
   box-shadow: 0 4px 15px rgba(241, 211, 161, 0.25);
 }
 
-/* همرنگ شدن تمام دکمه‌های اصلی و فعال با تکست طلایی بازی */
 .btn {
   background: var(--text-gold);
   color: var(--bg-dark-velvet);
@@ -180,7 +175,7 @@ button.option.selected {
 }
 
 .btn:hover:not(:disabled) {
-  background: #f7e2c2; /* طلایی کمی روشن‌تر برای افکت هاور */
+  background: #f7e2c2; 
   box-shadow: 0 6px 25px rgba(241, 211, 161, 0.35);
 }
 
@@ -208,6 +203,49 @@ button.option.selected {
   background: var(--text-gold);
   color: var(--bg-dark-velvet);
   border-color: var(--text-gold);
+}
+
+/* استایل بخش جدید تاریخچه */
+.history-section {
+  margin-top: 35px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(241, 211, 161, 0.1);
+  border-radius: 20px;
+  display: none;
+}
+
+.history-title {
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--text-gold);
+  margin: 0 0 15px 0;
+  opacity: 0.7;
+}
+
+.history-item {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.btn-clear-history {
+  background: transparent;
+  color: rgba(248, 113, 113, 0.6);
+  border: none;
+  font-size: 11px;
+  cursor: pointer;
+  display: block;
+  margin: 15px auto 0 auto;
+  transition: color 0.2s;
+}
+
+.btn-clear-history:hover {
+  color: #f87171;
 }
 
 .admin-actions {
