@@ -35,12 +35,12 @@
       <button class="btn-clear-history" onclick="clearHistory()">حذف کل تاریخچه</button>
     </div>
 
-    <div id="status">BY RAMIN • VERSION 5.0</div>
+    <div id="status">BY RAMIN • VERSION 5.1</div>
   </div>
 
   <script>
     const defaultQuestions = [
-      {q: "قهوه یا چای؟", options: ["قهوه", "چای"]}
+      {q: "قهوه یا چای Oz?", options: ["قهوه", "چای"]}
     ];
     
     let questions = [...defaultQuestions];
@@ -241,7 +241,7 @@
         listEl.innerHTML = history.map((h, index) => `
           <div class="history-item">
             <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-              <span style="color:#fff; font-size:13px; font-weight:500;">طراح سوال: ${h.creator}</span>
+              <span class="history-role-text">طراح سوال: ${h.creator}</span>
               <span style="font-size:14px; font-weight:700; color:#4ade80;">${h.percent}% ❤️</span>
             </div>
             <div style="display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,0.5); margin-bottom:10px;">
@@ -286,7 +286,7 @@
     }
 
     function deleteQuestion(index) {
-      if (!confirm("آیا از حذف این سوال مطمئن هستید؟")) return;
+      if (!confirm("آیا از حذف این سوال مطمئن هستید幕")) return;
       questions.splice(index, 1);
       localStorage.setItem('customQuestions', JSON.stringify(questions));
       renderGame();
