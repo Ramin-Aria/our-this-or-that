@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
+
+body {
+  font-family: 'Vazirmatn', sans-serif;
+  background: linear-gradient(135deg, #fff0f5, #e0f2fe);
+  margin: 0; padding: 12px; min-height: 100vh;
+}
+
+.container {
+  max-width: 720px;
+  margin: auto;
+  background: white;
+  border-radius: 28px;
+  padding: 25px;
+  box-shadow: 0 20px 60px rgba(233,30,99,0.15);
+}
+
+h1 { color: #e91e63; text-align: center; margin: 15px 0; }
+
+.question {
+  background: #fff0f5;
+  padding: 20px;
+  margin: 16px 0;
+  border-radius: 20px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (min-width: 600px) {
+  .options { flex-direction: row; }
+}
+
+button.option {
+  padding: 18px;
+  border: 2px solid #f8bbd0;
+  background: white;
+  border-radius: 16px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+button.option.selected {
+  background: #e91e63;
+  color: white;
+  border-color: #e91e63;
+  transform: scale(1.04);
+}
+
+.btn {
+  background: #e91e63;
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 50px;
+  font-size: 17px;
+  width: 100%;
+  margin: 12px 0;
+  cursor: pointer;
+}
+
+.result {
+  margin-top: 30px;
+  padding: 25px;
+  background: #f0f4c3;
+  border-radius: 24px;
+  display: none;
+}
