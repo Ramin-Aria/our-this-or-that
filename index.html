@@ -25,6 +25,12 @@
 
     <div id="result" class="result"></div>
 
+    <div id="historySection" class="history-section">
+      <h3 class="history-title">HISTORY</h3>
+      <div id="historyList"></div>
+      <button class="btn-clear-history" onclick="clearHistory()">حذف تاریخچه</button>
+    </div>
+
     <div id="status">BY RAMIN • VERSION 4.5</div>
   </div>
 
@@ -55,16 +61,19 @@
         myAnswers = r.split('').map(Number);
         if (pn) myName = decodeURIComponent(pn);
         
-        // مخفی کردن دکمه مدیریت و دکمه پایان بازی در حالت نتیجه نهایی
         document.getElementById('adminButtons').style.display = 'none';
         document.getElementById('finishActionArea').style.display = 'none';
         
         showFinalResult();
+        
+        // اگر طراح لینک را باز کرد، بازی در تاریخچه طراح هم ثبت شود
+        saveToHistory(partnerName, myName, partnerAnswers, myAnswers);
       } else if (p) {
         partnerAnswers = p.split('').map(Number);
         isSecondPlayer = true;
         document.getElementById('adminButtons').style.display = 'none';
       }
+      renderHistory();
     }
 
     function addNewQuestion() {
@@ -140,6 +149,9 @@
           </p>`;
         });
 
+        // ذخیره در تاریخچه مرورگر نفر دوم (بازیکن)
+        saveToHistory(partnerName, myName, partnerAnswers, myAnswers);
+
         const encodedPartnerAnswers = partnerAnswers.join('');
         const resultLink = `${base}?p=${encodedPartnerAnswers}&r=${encodedMyAnswers}&p1n=${encodeURIComponent(partnerName)}&pn=${encodeURIComponent(myName)}`;
         
@@ -155,6 +167,7 @@
       document.getElementById('result').innerHTML = html;
       document.getElementById('result').style.display = 'block';
       document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+      renderHistory();
     }
 
     function copyLink(link) {
@@ -178,6 +191,59 @@
       });
       document.getElementById('result').innerHTML = html;
       document.getElementById('result').style.display = 'block';
+    }
+
+    // تابع ذخیره سازی داده‌ها در تاریخچه
+    function saveToHistory(creator, player, pAnswers, rAnswers) {
+      if (!creator || !player || !pAnswers || !rAnswers) return;
+      
+      let history = JSON.parse(localStorage.getItem('gameHistory')) || [];
+      
+      const correctCount = rAnswers.filter((a, i) => a === pAnswers[i]).length;
+      const percent = Math.round((correctCount / pAnswers.length) * 100);
+      
+      const now = new Date();
+      const dateTimeStr = now.toLocaleDateString('fa-IR') + ' ساعت ' + now.toLocaleTimeString('fa-IR', {hour: '2-digit', minute:'2-digit'});
+
+      // جلوگیری از ثبت رکورد کاملاً تکراری
+      const isDuplicate = history.some(h => h.creator === creator && h.player === player && h.dateTime === dateTimeStr);
+      if (isDuplicate) return;
+
+      history.unshift({ creator, player, percent, dateTime: dateTimeStr });
+      localStorage.setItem('gameHistory', JSON.stringify(history));
+    }
+
+    // تابع رندر کردن لیست تاریخچه در قالب کادر
+    function renderHistory() {
+      const history = JSON.parse(localStorage.getItem('gameHistory')) || [];
+      const container = document.getElementById('historySection');
+      const listEl = document.getElementById('historyList');
+      
+      if (history.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+      
+      container.style.display = 'block';
+      listEl.innerHTML = history.map(h => `
+        <div class="history-item">
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+            <span style="color:var(--text-gold); font-size:12px;">طراح: ${h.creator}</span>
+            <span style="font-size:13px; font-weight:700; color:#4ade80;">${h.percent}% ❤️</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,0.5);">
+            <span>بازیکن: ${h.player}</span>
+            <span>${h.dateTime}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function clearHistory() {
+      if (confirm("آیا مایل به حذف کل تاریخچه بازی‌ها هستید؟")) {
+        localStorage.removeItem('gameHistory');
+        renderHistory();
+      }
     }
 
     function editQuestion(index) {
