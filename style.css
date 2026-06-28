@@ -234,14 +234,21 @@ button.option.selected {
   text-align: right;
 }
 
-/* اصلاح کامل استایل متن طراح سوال (دقیقاً همرنگ و هم‌اندازه فیلد بازیکن) */
+/* استایل فیلد طراح سوال */
 .history-role-text {
   color: rgba(255, 255, 255, 0.5) !important;
   font-size: 11px !important;
   font-weight: 400 !important;
 }
 
-/* استایل دکمه بیشتر... (طلایی دکمه‌ها و سایز استاندارد ۱۱ پیکسل) */
+/* استایل فیلد بازیکن (فعلاً کاملاً شبیه به طراح سوال) */
+.history-player-text {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+}
+
+/* استایل دکمه بیشتر... */
 .text-details-trigger {
   color: var(--text-gold) !important;
   font-size: 11px !important;
