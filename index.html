@@ -20,7 +20,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>🎲 v4 این یا آن • ما دو تا</h1>
+    <h1>🎲 این یا آن • ما دو تا</h1>
     <p style="text-align:center;color:#c2185b" id="status">۲۰ سوال رمانتیک</p>
 
     <div id="game"></div>
@@ -37,7 +37,7 @@
     let partnerAnswers = null;
     let isSecondPlayer = false;
 
-    const questions = [ /* همان ۲۰ سوال */ 
+    const questions = [
       {q:"قهوه یا چای؟",a:"قهوه",b:"چای"},{q:"سفر دریا یا کوه؟",a:"دریا",b:"کوه"},
       {q:"صبح یا شب؟",a:"صبح",b:"شب"},{q:"بوسه روی لب یا پیشونی؟",a:"لب",b:"پیشونی"},
       {q:"هدیه دادن یا گرفتن؟",a:"دادن",b:"گرفتن"},{q:"فیلم عاشقانه یا کمدی؟",a:"عاشقانه",b:"کمدی"},
@@ -50,13 +50,13 @@
       {q:"رقصیدن یا حرف زدن؟",a:"رقصیدن",b:"حرف زدن"},{q:"عاشق شدن سریع یا آهسته؟",a:"سریع",b:"آهسته"}
     ];
 
-    function loadPartnerAnswers() {
+    function loadDataFromUrl() {
       const params = new URLSearchParams(window.location.search);
       const p = params.get('p');
       if (p && p.length === 20) {
         partnerAnswers = p.split('').map(c => c === '1' ? 'a' : 'b');
         isSecondPlayer = true;
-        document.getElementById('status').innerHTML = 'نوبت توئه ❤️ بعد از پایان نتیجه کامل رو ببین';
+        document.getElementById('status').innerHTML = 'نوبت توئه ❤️ بازی کن';
       }
     }
 
@@ -90,21 +90,27 @@
 
       let html = `<h2 style="text-align:center">🎉 بازی تموم شد!</h2>`;
 
-      if (partnerAnswers) {
-        // نفر دوم - نمایش نتیجه کامل
+      if (isSecondPlayer && partnerAnswers) {
+        // نفر دوم - نمایش نتیجه + تولید لینک برای نفر اول
         let match = 0;
-        html += `<p style="font-size:26px;text-align:center"><strong>تطابق ما: ${Math.round(myAnswers.filter((a,i)=>a===partnerAnswers[i]).length/20*100)}%</strong></p>`;
+        html += `<p style="font-size:26px;text-align:center"><strong>تطابق ما: ${Math.round(myAnswers.filter((a,i)=>a===partnerAnswers[i]).length / 20 * 100)}%</strong></p>`;
         
         questions.forEach((q,i) => {
           const my = myAnswers[i]==='a' ? q.a : q.b;
           const partner = partnerAnswers[i]==='a' ? q.a : q.b;
           html += `<p><strong>${i+1}. ${q.q}</strong><br>تو: ${my} | اون: ${partner} ${myAnswers[i]===partnerAnswers[i]?'❤️':''}</p>`;
         });
-      } else {
+
+        // لینک نتیجه برای نفر اول
+        const resultLink = `${base}?p=${partnerAnswers.map(a => a==='a'?'1':'2').join('')}&r=${encodedMy}`;
+        html += `<p style="margin-top:20px">لینک نتیجه رو برای طرف مقابل بفرست:</p>`;
+        html += `<input type="text" value="${resultLink}" style="width:100%;padding:12px;font-size:14px" readonly>`;
+        html += `<button class="btn" onclick="copyLink('${resultLink}')">کپی لینک نتیجه</button>`;
+      } else if (!isSecondPlayer) {
         // نفر اول
-        const resultLink = `${base}?p=${encodedMy}&result=1`;
-        html += `<p>لینک رو بفرست:</p><input value="${resultLink}" style="width:100%;padding:12px" readonly>`;
-        html += `<button class="btn" onclick="copyLink('${resultLink}')">کپی لینک</button>`;
+        const shareLink = `${base}?p=${encodedMy}`;
+        html += `<p>لینک بازی رو بفرست:</p><input value="${shareLink}" style="width:100%;padding:12px" readonly>`;
+        html += `<button class="btn" onclick="copyLink('${shareLink}')">کپی لینک</button>`;
       }
 
       document.getElementById('result').innerHTML = html;
@@ -112,11 +118,11 @@
     }
 
     function copyLink(link) {
-      navigator.clipboard.writeText(link).then(() => alert('لینک کپی شد ✅'));
+      navigator.clipboard.writeText(link).then(() => alert('✅ لینک کپی شد'));
     }
 
     window.onload = () => {
-      loadPartnerAnswers();
+      loadDataFromUrl();
       renderGame();
     };
   </script>
