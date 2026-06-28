@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>این یا آن • ما دو تا ❤️ v3.1</title>
+  <title>این یا آن • ما دو تا ❤️ v3.2</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,11 +14,10 @@
     </div>
 
     <h1>🎲 این یا آن • ما دو تا</h1>
-    <p style="text-align:center;color:#c2185b" id="status">نسخه ۳.۱ - مدیریت سوال</p>
+    <p style="text-align:center;color:#c2185b" id="status">نسخه ۳.۲ - مدیریت آسان سوال</p>
 
     <div style="text-align:center; margin:15px 0;">
-      <button class="btn" onclick="showQuestionEditor()" style="background:#1e88e5; width:auto; display:inline-block; padding:12px 20px;">+ سوال جدید</button>
-      <button class="btn" onclick="manageQuestions()" style="background:#666; width:auto; display:inline-block; padding:12px 20px;">مدیریت سوال‌ها</button>
+      <button class="btn" onclick="addNewQuestion()" style="background:#1e88e5; width:auto; padding:12px 24px;">+ سوال جدید</button>
     </div>
 
     <div id="game"></div>
@@ -32,65 +31,54 @@
 
   <script>
     let questions = JSON.parse(localStorage.getItem('customQuestions')) || [
-      {q: "قهوه یا چای؟", options: ["قهوه", "چای"]},
-      {q: "سفر دریا یا کوه؟", options: ["دریا", "کوه"]},
-      {q: "صبح یا شب؟", options: ["صبح", "شب"]},
-      {q: "بوسه روی لب یا پیشونی؟", options: ["لب", "پیشونی"]}
+      {q: "قهوه یا چای؟", options: ["قهوه", "چای"]}
     ];
 
     let myAnswers = [];
-    let partnerAnswers = null;
 
     function renderProfiles() {
       document.getElementById('myProfile').innerHTML = `<strong>${localStorage.getItem('myName') || "من 🧔"}</strong>`;
       document.getElementById('partnerProfile').innerHTML = `<strong>${localStorage.getItem('partnerName') || "اون 💄"}</strong>`;
     }
 
-    function showQuestionEditor() {
-      const q = prompt("سوال جدید رو بنویس:");
+    function addNewQuestion() {
+      const q = prompt("سوال جدید:");
       if (!q) return;
 
       const options = [];
       for (let i = 1; i <= 4; i++) {
-        const opt = prompt(`گزینه ${i} (خالی بگذار اگر تموم شد):`);
+        const opt = prompt(`گزینه ${i} (خالی بگذار اگر کافی بود):`);
         if (!opt) break;
         options.push(opt);
       }
-
       if (options.length < 2) return alert("حداقل ۲ گزینه لازم است!");
 
       questions.push({q, options});
       localStorage.setItem('customQuestions', JSON.stringify(questions));
-      alert("✅ سوال اضافه شد");
       renderGame();
     }
 
-    function manageQuestions() {
-      let text = "سوال‌های فعلی:\n\n";
-      questions.forEach((q, i) => {
-        text += `${i+1}. ${q.q} (${q.options.length} گزینه)\n`;
-      });
-      text += "\nبرای حذف یا ویرایش، شماره سوال رو بنویس:";
-      const input = prompt(text);
+    function editQuestion(index) {
+      const q = prompt("سوال جدید:", questions[index].q);
+      if (q) questions[index].q = q;
 
-      if (!input) return;
-
-      const index = parseInt(input) - 1;
-      if (isNaN(index) || index < 0 || index >= questions.length) return alert("شماره نامعتبر!");
-
-      const action = prompt("1 = ویرایش\n2 = حذف\n\nعدد بزن:");
-      if (action === "1") {
-        const newQ = prompt("سوال جدید:", questions[index].q);
-        if (newQ) questions[index].q = newQ;
-        alert("ویرایش شد");
-      } else if (action === "2") {
-        if (confirm("آیا مطمئن هستی که می‌خوای این سوال حذف بشه؟")) {
-          questions.splice(index, 1);
-          alert("حذف شد");
-        }
+      const newOptions = [];
+      for (let i = 0; i < questions[index].options.length; i++) {
+        const opt = prompt(`گزینه ${i+1}:`, questions[index].options[i]);
+        if (opt) newOptions.push(opt);
       }
+      if (newOptions.length >= 2) questions[index].options = newOptions;
+
       localStorage.setItem('customQuestions', JSON.stringify(questions));
       renderGame();
+    }
+
+    function deleteQuestion(index) {
+      if (confirm("آیا این سوال حذف شود؟")) {
+        questions.splice(index, 1);
+        localStorage.setItem('customQuestions', JSON.stringify(questions));
+        renderGame();
+      }
     }
 
     function renderGame() {
@@ -98,29 +86,35 @@
       myAnswers = new Array(questions.length).fill(null);
 
       questions.forEach((q, i) => {
-        let opts = q.options.map((opt, j) => 
-          `<button class="option" onclick="selectAnswer(${i},${j})">${opt}</button>`
+        let optsHtml = q.options.map((opt, j) => 
+          `<button class="option" onclick="selectAnswer(${i}, ${j})">${opt}</button>`
         ).join('');
+
         html += `<div class="question">
-          <strong>${i+1}. ${q.q}</strong>
-          <div class="options">${opts}</div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>${i+1}. ${q.q}</strong>
+            <div>
+              <span onclick="editQuestion(${i})" style="cursor:pointer; margin:0 8px;">✏️</span>
+              <span onclick="deleteQuestion(${i})" style="cursor:pointer; color:#e91e63;">🗑️</span>
+            </div>
+          </div>
+          <div class="options">${optsHtml}</div>
         </div>`;
       });
+
       document.getElementById('game').innerHTML = html;
     }
 
     function selectAnswer(qIndex, optIndex) {
       myAnswers[qIndex] = optIndex;
-      const qDiv = document.querySelectorAll('.question')[qIndex];
-      qDiv.querySelectorAll('button').forEach((btn, idx) => {
-        btn.classList.toggle('selected', idx === optIndex);
-      });
+      const buttons = document.querySelectorAll('.question')[qIndex].querySelectorAll('button');
+      buttons.forEach((b, idx) => b.classList.toggle('selected', idx === optIndex));
       document.getElementById('finishBtn').disabled = myAnswers.includes(null);
     }
 
     function finishGame() {
       if (myAnswers.includes(null)) return;
-      alert("بازی با موفقیت تموم شد!\n\n(لینک اشتراکی در نسخه بعدی اضافه میشه)");
+      alert("بازی تموم شد! ✅\n\n(قابلیت لینک اشتراکی در نسخه بعدی اضافه می‌شود)");
     }
 
     window.onload = () => {
