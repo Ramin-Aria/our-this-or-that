@@ -4,14 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Are We a Match? • ما دو تا</title>
-  <!-- بارگذاری آیکون‌های رسمی گوگل -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h1 class="en-title">Are We a Match?</h1>
-    <p id="status">VERSION 4.1</p>
+    <p id="status">VERSION 4.2</p>
 
     <div style="text-align:center; margin:15px 0;" id="adminButtons">
       <button class="btn-admin" onclick="addNewQuestion()">BUILD A QUESTION</button>
@@ -88,8 +87,8 @@
         ).join('');
 
         let admin = !isSecondPlayer ? 
-          `<span onclick="editQuestion(${i})" class="material-symbols-outlines action-icon">edit</span>
-           <span onclick="deleteQuestion(${i})" class="material-symbols-outlines action-icon delete">delete</span>` : '';
+          `<span onclick="editQuestion(${i})" class="material-symbols-outlined action-icon">edit</span>
+           <span onclick="deleteQuestion(${i})" class="material-symbols-outlined action-icon delete">delete</span>` : '';
 
         html += `<div class="question">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -197,4 +196,4 @@
     };
   </script>
 </body>
-</html>
+</html>ط
