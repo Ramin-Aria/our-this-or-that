@@ -26,19 +26,16 @@
     <div id="result" class="result"></div>
 
     <div style="text-align:center; margin-top:20px;">
-      <button class="btn btn-history-trigger" onclick="openHistoryModal()">HISTORY</button>
+      <button class="btn btn-history-trigger" onclick="toggleHistoryBox()">HISTORY</button>
     </div>
 
-    <div id="status">BY RAMIN • VERSION 4.8</div>
-  </div>
-
-  <div id="historyModal" class="modal">
-    <div class="modal-content">
-      <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
-      <h3 class="history-modal-title">GAME HISTORY</h3>
-      <div id="modalHistoryList"></div>
+    <div id="historyInlineBox" class="history-inline-box" style="display: none;">
+      <h3 class="history-box-title">GAME HISTORY</h3>
+      <div id="inlineHistoryList"></div>
       <button class="btn-clear-history" onclick="clearHistory()">حذف کل تاریخچه</button>
     </div>
+
+    <div id="status">BY RAMIN • VERSION 4.9</div>
   </div>
 
   <script>
@@ -65,7 +62,6 @@
 
       if (r) {
         isResultMode = true;
-        // لود کردن امینتی سوالات برای نمایش درست جزییات در تاریخچه طراح
         questions = JSON.parse(localStorage.getItem('customQuestions')) || [...defaultQuestions];
         partnerAnswers = p ? p.split('').map(Number) : null;
         myAnswers = r.split('').map(Number);
@@ -210,7 +206,6 @@
       const now = new Date();
       const dateTimeStr = now.toLocaleDateString('fa-IR') + ' ساعت ' + now.toLocaleTimeString('fa-IR', {hour: '2-digit', minute:'2-digit'});
 
-      // استفاده از شناسه زمانی یکتا به جای بررسی صرفاً متن برای جلوگیری از اختلال در رفرش
       const isDuplicate = history.some(h => h.creator === creator && h.player === player && h.percent === percent);
       if (isDuplicate) return;
 
@@ -225,12 +220,23 @@
       localStorage.setItem('gameHistory', JSON.stringify(history));
     }
 
-    function openHistoryModal() {
+    function toggleHistoryBox() {
+      const box = document.getElementById('historyInlineBox');
+      if (box.style.display === 'none') {
+        renderInlineHistory();
+        box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        box.style.display = 'none';
+      }
+    }
+
+    function renderInlineHistory() {
       const history = JSON.parse(localStorage.getItem('gameHistory')) || [];
-      const listEl = document.getElementById('modalHistoryList');
+      const listEl = document.getElementById('inlineHistoryList');
       
       if (history.length === 0) {
-        listEl.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); font-size:14px; padding:20px 0;">هیچ بازی ثبت شده‌ای در تاریخچه این مرورگر وجود ندارد.</p>`;
+        listEl.innerHTML = `<p style="text-align:center; color:rgba(255,255,255,0.4); font-size:13px; padding:15px 0;">هیچ بازی ثبت شده‌ای در تاریخچه وجود ندارد.</p>`;
       } else {
         listEl.innerHTML = history.map((h, index) => `
           <div class="history-item">
@@ -238,14 +244,14 @@
               <span style="color:var(--text-gold); font-size:13px; font-weight:700;">طراح: ${h.creator}</span>
               <span style="font-size:14px; font-weight:700; color:#4ade80;">${h.percent}% ❤️</span>
             </div>
-            <div style="display:flex; justify-content:space-between; font-size:12px; color:rgba(255,255,255,0.5); margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,0.5); margin-bottom:10px;">
               <span>بازیکن: ${h.player}</span>
               <span>${h.dateTime}</span>
             </div>
             <button class="btn-details-trigger" onclick="toggleDetails(${index})">مشاهده جزئیات سوالات</button>
             <div id="details-${index}" class="history-details-box" style="display:none;">
               ${h.details ? h.details.map((d, i) => `
-                <div style="margin-bottom:8px; font-size:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px; direction:rtl; text-align:right;">
+                <div style="margin-bottom:8px; font-size:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px; text-align:right;">
                   <strong style="color:#fff; display:block; margin-bottom:3px;">${i+1}. ${d.question}</strong>
                   <span style="color:var(--text-gold)">${h.creator}:</span> ${d.creatorOpt} | <span style="color:var(--text-gold)">${h.player}:</span> ${d.playerOpt} ${d.isMatch ? '🌹' : ''}
                 </div>
@@ -254,11 +260,6 @@
           </div>
         `).join('');
       }
-      document.getElementById('historyModal').style.display = 'flex';
-    }
-
-    function closeHistoryModal() {
-      document.getElementById('historyModal').style.display = 'none';
     }
 
     function toggleDetails(index) {
@@ -269,7 +270,7 @@
     function clearHistory() {
       if (confirm("آیا مایل به حذف کل تاریخچه بازی‌ها هستید؟")) {
         localStorage.removeItem('gameHistory');
-        openHistoryModal();
+        renderInlineHistory();
       }
     }
 
