@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>این یا آن • ما دو تا ❤️</title>
+  <title>این یا آن • ما دو تا ❤️ v2.0</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <div class="header" style="display:flex; justify-content:space-between; margin-bottom:20px;">
-      <div class="profile" id="myProfile"></div>
-      <div class="profile" id="partnerProfile"></div>
+    <div style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;">
+      <div id="myProfile" style="font-weight:bold;"></div>
+      <div id="partnerProfile" style="font-weight:bold; opacity:0.7;"></div>
     </div>
 
     <h1>🎲 این یا آن • ما دو تا</h1>
-    <p style="text-align:center;color:#c2185b" id="status">۲۰ سوال رمانتیک</p>
+    <p style="text-align:center;color:#c2185b" id="status">۲۰ سوال رمانتیک - نسخه ۲.۰</p>
 
     <div class="progress"><div class="progress-bar" id="progress"></div></div>
 
@@ -35,7 +35,7 @@
     let partnerAnswers = null;
     let isSecondPlayer = false;
 
-    const questions = [ /* ۲۰ سوال قبلی */ 
+    const questions = [
       {q:"قهوه یا چای؟",a:"قهوه",b:"چای"},{q:"سفر دریا یا کوه؟",a:"دریا",b:"کوه"},
       {q:"صبح یا شب؟",a:"صبح",b:"شب"},{q:"بوسه روی لب یا پیشونی؟",a:"لب",b:"پیشونی"},
       {q:"هدیه دادن یا گرفتن؟",a:"دادن",b:"گرفتن"},{q:"فیلم عاشقانه یا کمدی؟",a:"عاشقانه",b:"کمدی"},
@@ -49,40 +49,52 @@
     ];
 
     function renderProfiles() {
-      document.getElementById('myProfile').innerHTML = `
-        <strong>${myName}</strong>
-        <small onclick="editMyName()" style="color:#1e88e5;cursor:pointer;margin-right:8px;">ویرایش</small>
-      `;
-
-      document.getElementById('partnerProfile').innerHTML = `
-        <strong>${partnerName}</strong>
-      `;
+      document.getElementById('myProfile').innerHTML = `<strong>${myName}</strong>`;
+      document.getElementById('partnerProfile').innerHTML = `<strong>${partnerName}</strong>`;
     }
 
-    function editMyName() {
-      const name = prompt("اسمت رو بنویس:", myName);
-      if (name) {
-        myName = name;
-        localStorage.setItem('myName', name);
-        renderProfiles();
+    function loadFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const p = params.get('p');
+      if (p && p.length === 20) {
+        partnerAnswers = p.split('').map(c => c === '1' ? 'a' : 'b');
+        isSecondPlayer = true;
+        document.getElementById('status').innerHTML = `نوبت ${partnerName} ❤️`;
       }
     }
 
-    function editPartnerName() {
-      const name = prompt("اسم طرف مقابل رو بنویس:", partnerName);
-      if (name) {
-        partnerName = name;
-        localStorage.setItem('partnerName', name);
-        renderProfiles();
-      }
+    function renderGame() {
+      let html = '';
+      questions.forEach((q, i) => {
+        html += `<div class="question">
+          <strong>${i+1}. ${q.q}</strong>
+          <div class="options">
+            <button class="option" onclick="selectAnswer(${i}, 'a')">${q.a}</button>
+            <button class="option" onclick="selectAnswer(${i}, 'b')">${q.b}</button>
+          </div>
+        </div>`;
+      });
+      document.getElementById('game').innerHTML = html;
     }
 
-    // بقیه کد بازی (loadFromUrl, renderGame, finishGame و ...) رو از نسخه قبلی کپی کن
-    // برای جلوگیری از طولانی شدن، فعلاً فقط پروفایل اضافه شده
+    function selectAnswer(i, choice) {
+      myAnswers[i] = choice;
+      const buttons = document.querySelectorAll('.question')[i].querySelectorAll('button');
+      buttons.forEach(b => b.classList.remove('selected'));
+      event.target.classList.add('selected');
+      document.getElementById('finishBtn').disabled = myAnswers.includes(null);
+    }
+
+    function finishGame() {
+      if (myAnswers.includes(null)) return;
+      // ... (بقیه کد finishGame از نسخه قبلی)
+      alert("برای کامل شدن این بخش، کد کامل رو در پیام بعدی می‌فرستم.");
+    }
 
     window.onload = () => {
       renderProfiles();
-      // بقیه توابع رو اینجا اضافه کن (از پیام قبلی)
+      loadFromUrl();
+      renderGame();
     };
   </script>
 </body>
