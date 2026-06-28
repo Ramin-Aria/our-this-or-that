@@ -187,7 +187,7 @@
     }
 
     function deleteQuestion(index) {
-      if (!confirm("آیا از حذف این سوال مطمئن هستید Mom؟")) return;
+      if (!confirm("آیا از حذف این سوال مطمئن هستید؟")) return;
       questions.splice(index, 1);
       localStorage.setItem('customQuestions', JSON.stringify(questions));
       renderGame();
