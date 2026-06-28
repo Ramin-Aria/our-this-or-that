@@ -1,14 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Vazirmatn:wght@400;500;700&display=swap');
 
 :root {
-  /* پلت رنگی عمیق، رمانتیک و لوکس بر اساس Amoréa Boutique */
-  --bg-dark-velvet: #1b040a;    /* زرشکی به شدت تیره و مخملی */
-  --card-dark: #290812;         /* رنگ بدنه اصلی کانتینرها */
-  --gold-luxury: #e2ba7d;       /* طلایی ملایم برای خطوط و تاکیدها */
-  --rose-crimson: #800f2f;      /* رنگ اصلی رز زرشکی */
-  --rose-light: #ffb5a7;        /* صورتی پاستلی ملایم */
-  --text-white: #f8fafc;
+  /* پلت رنگی زرشکی لوکس و دراماتیک کاملاً منطبق بر Amoréa Boutique */
+  --bg-dark-velvet: #1a0206;    /* زرشکی تیره عمیق نزدیک به مشکی */
+  --card-burgundy: #2d040f;     /* رنگ بدنه زرشکی لوکس کانتینر */
+  --gold-luxury: #e2ba7d;       /* طلایی برای تاکیدها و متون خاص */
+  --text-white: #ffffff;
   --text-gold: #f1d3a1;
+  --border-subtle: rgba(226, 186, 125, 0.15);
 }
 
 * {
@@ -19,83 +18,84 @@
 
 body {
   margin: 0;
-  padding: 30px 16px;
+  padding: 40px 16px;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-white);
   
-  /* تصویر پس‌زمینه باکیفیت بالا از رزهای مخملی تیره و رمانتیک منطبق بر عکس نمونه */
-  background: url('https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80&w=1200&auto=format&fit=crop') no-repeat center center fixed;
+  /* تصویر پس‌زمینه زنده و فوق‌العاده باکیفیت از رزهای زرشکی تیره مخملی بدون برگهای اضافه */
+  background: url('https://images.unsplash.com/photo-1559563458-527698bf5295?q=80&w=1200&auto=format&fit=crop') no-repeat center center fixed;
   background-size: cover;
   position: relative;
 }
 
-/* لایه زرشکی تیره روی کل صفحه برای حفظ کنتراست عالی و افزایش جذابیت بصری */
+/* لایه رنگی زرشکی سنگین روی پس‌زمینه برای حفظ کنتراست متون و القای حس تصویر پینترست */
 body::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, rgba(27, 4, 10, 0.92), rgba(64, 7, 23, 0.88));
+  background: linear-gradient(135deg, rgba(26, 2, 6, 0.94), rgba(58, 4, 18, 0.9));
   z-index: 0;
 }
 
 .container {
   width: 100%;
-  max-width: 550px;
-  background: var(--card-dark);
-  border: 1px solid rgba(226, 186, 125, 0.15); /* کادر بسیار ظریف طلایی */
-  border-radius: 4px; /* لبه‌های تیزتر و لوکس‌تر بر اساس تصویر */
-  padding: 45px 30px;
-  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.7);
+  max-width: 540px;
+  background: var(--card-burgundy);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0px; /* طراحی کاملاً تخت و بدون گوشه گرد مانند نمونه لوکس پینترست */
+  padding: 50px 35px;
+  box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05);
   position: relative;
   z-index: 1;
 }
 
-/* فونت انگلیسی دست‌نویس لوکس برای عنوان بازی */
+/* فونت فوق‌العاده رمانتیک دست‌نویس انگلیسی برای هدر */
 .en-title {
   font-family: 'Pinyon Script', cursive;
   color: var(--text-gold);
   text-align: center;
   margin: 0 0 5px 0;
-  font-size: 52px;
+  font-size: 58px;
   font-weight: 400;
   direction: ltr;
+  text-shadow: 0 2px 10px rgba(241, 211, 161, 0.2);
 }
 
 #status {
   font-family: 'Playfair Display', serif;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   color: var(--gold-luxury);
   text-align: center;
-  margin-bottom: 40px;
-  opacity: 0.7;
+  margin-bottom: 45px;
+  opacity: 0.8;
 }
 
-/* کارت‌های سوالات */
+/* کارت‌ها و جداکننده‌های سوالات */
 .question {
-  border-bottom: 1px solid rgba(226, 186, 125, 0.15);
-  padding-bottom: 25px;
-  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(226, 186, 125, 0.12);
+  padding-bottom: 28px;
+  margin-bottom: 32px;
 }
 
 .question strong {
   color: var(--text-white);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 500;
   line-height: 1.6;
   display: block;
 }
 
-/* دکمه‌های گزینه‌ها (مینیمال آوت‌لاین بر اساس دکمه‌های Customize در عکس) */
+/* دکمه‌های گزینه‌ها (تخت، خط باریک دور، کاملاً مینی‌مال) */
 .options {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 15px;
-  margin-top: 18px;
+  gap: 14px;
+  margin-top: 20px;
 }
 
 @media (min-width: 450px) {
@@ -105,22 +105,21 @@ body::before {
 }
 
 button.option {
-  padding: 12px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   background: transparent;
   color: var(--text-white);
-  border-radius: 0px; /* طراحی مینی‌مال تخت و بدون گردی دکمه‌ها */
+  border-radius: 0px;
   font-size: 14px;
-  text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   text-align: center;
 }
 
 button.option:hover {
   border-color: var(--text-gold);
-  background: rgba(226, 186, 125, 0.05);
+  background: rgba(241, 211, 161, 0.04);
   color: var(--text-gold);
 }
 
@@ -131,19 +130,19 @@ button.option.selected {
   font-weight: 700;
 }
 
-/* دکمه‌های اصلی و ویژه (مثل دکمه BUILD A BOUQUET سفید و توپر نمونه) */
+/* دکمه اصلی پایان بازی (سفید توپر، عریض و درخشان مانند BUILD A BOUQUET) */
 .btn {
   background: var(--text-white);
   color: var(--bg-dark-velvet);
   border: none;
-  padding: 14px 28px;
+  padding: 15px 30px;
   border-radius: 0px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 2.5px;
   width: 100%;
-  margin: 25px 0 10px 0;
+  margin: 30px 0 10px 0;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -153,48 +152,74 @@ button.option.selected {
 }
 
 .btn:disabled {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   color: rgba(255, 255, 255, 0.3);
   cursor: not-allowed;
 }
 
-/* دکمه‌های تکست یا خط‌چین بالا صفحه (بخش ادمین) */
-.btn-outline {
+/* دکمه اضافه کردن سوال جدید (هماهنگ با تم مینی‌مال و متنی نمونه پینترست) */
+.btn-admin {
   background: transparent;
   color: var(--text-gold);
-  border: 1px solid rgba(226, 186, 125, 0.4);
-  padding: 10px 20px;
-  font-size: 13px;
-  letter-spacing: 1px;
+  border: 1px solid rgba(241, 211, 161, 0.3);
+  border-radius: 0px;
+  padding: 12px 24px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.btn-outline:hover {
-  background: rgba(226, 186, 125, 0.1);
+.btn-admin:hover {
+  background: rgba(241, 211, 161, 0.06);
   border-color: var(--text-gold);
 }
 
-/* باکس نتایج بازی */
+/* دکمه‌های متنی ادیت و حذف (بدون رنگ، بدون ایموجی، مینی‌مال و متنی) */
+.admin-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.action-btn {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.action-btn:hover {
+  color: var(--text-gold);
+}
+
+.action-btn.delete:hover {
+  color: #ef4444; /* تغییر ملایم رنگ فقط هنگام هاور روی حذف برای راهنمایی کاربر */
+}
+
+/* باکس نمایش نتایج نهایی */
 .result {
-  margin-top: 40px;
-  padding: 25px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px dashed rgba(226, 186, 125, 0.3);
+  margin-top: 45px;
+  padding: 30px 25px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(241, 211, 161, 0.15);
   border-radius: 0px;
 }
 
 /* اینپوت لینک‌ها */
 input[type="text"] {
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--text-white);
-  padding: 12px;
-  font-size: 14px;
+  padding: 14px;
+  font-size: 13px;
   direction: ltr;
   text-align: left;
-  margin: 10px 0 15px 0;
+  margin: 12px 0 18px 0;
   width: 100%;
+  border-radius: 0px;
 }
 
 input[type="text"]:focus {
