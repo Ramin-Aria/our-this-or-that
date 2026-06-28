@@ -207,7 +207,7 @@ button.option.selected {
   border-color: var(--text-gold);
 }
 
-/* استایل جدید باکس تاریخچه خطی درونِ کارت */
+/* استایل باکس تاریخچه خطی درونِ کارت */
 .history-inline-box {
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(241, 211, 161, 0.15);
@@ -234,21 +234,21 @@ button.option.selected {
   text-align: right;
 }
 
-.btn-details-trigger {
-  background: rgba(241, 211, 161, 0.06);
+/* استایل جدید دکمه بیشتر... به صورت متن زرد باتن‌ها */
+.text-details-trigger {
   color: var(--text-gold);
-  border: 1px solid rgba(241, 211, 161, 0.15);
-  width: 100%;
-  padding: 8px;
-  border-radius: 10px;
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
-  margin-top: 5px;
-  transition: all 0.2s ease;
+  user-select: none;
+  transition: opacity 0.2s;
+  display: inline-block;
+  direction: ltr; /* برای نمایش صحیح علامت سه نقطه */
 }
 
-.btn-details-trigger:hover {
-  background: rgba(241, 211, 161, 0.15);
+.text-details-trigger:hover {
+  opacity: 0.8;
+  text-decoration: underline;
 }
 
 .history-details-box {
