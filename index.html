@@ -3,18 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>این یا آن • ما دو تا ❤️ v3.2</title>
+  <title>این یا آن • ما دو تا ❤️ v3.3</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-      <div id="myProfile"></div>
-      <div id="partnerProfile"></div>
-    </div>
-
     <h1>🎲 این یا آن • ما دو تا</h1>
-    <p style="text-align:center;color:#c2185b" id="status">نسخه ۳.۲ - مدیریت آسان سوال</p>
+    <p style="text-align:center;color:#c2185b" id="status">نسخه ۳.۳</p>
 
     <div style="text-align:center; margin:15px 0;">
       <button class="btn" onclick="addNewQuestion()" style="background:#1e88e5; width:auto; padding:12px 24px;">+ سوال جدید</button>
@@ -31,15 +26,13 @@
 
   <script>
     let questions = JSON.parse(localStorage.getItem('customQuestions')) || [
-      {q: "قهوه یا چای؟", options: ["قهوه", "چای"]}
+      {q: "قهوه یا چای؟", options: ["قهوه", "چای"]},
+      {q: "سفر دریا یا کوه؟", options: ["دریا", "کوه"]},
+      {q: "صبح یا شب؟", options: ["صبح", "شب"]}
     ];
 
     let myAnswers = [];
-
-    function renderProfiles() {
-      document.getElementById('myProfile').innerHTML = `<strong>${localStorage.getItem('myName') || "من 🧔"}</strong>`;
-      document.getElementById('partnerProfile').innerHTML = `<strong>${localStorage.getItem('partnerName') || "اون 💄"}</strong>`;
-    }
+    let playerName = "";
 
     function addNewQuestion() {
       const q = prompt("سوال جدید:");
@@ -47,7 +40,7 @@
 
       const options = [];
       for (let i = 1; i <= 4; i++) {
-        const opt = prompt(`گزینه ${i} (خالی بگذار اگر کافی بود):`);
+        const opt = prompt(`گزینه ${i} (خالی برای پایان):`);
         if (!opt) break;
         options.push(opt);
       }
@@ -58,50 +51,26 @@
       renderGame();
     }
 
-    function editQuestion(index) {
-      const q = prompt("سوال جدید:", questions[index].q);
-      if (q) questions[index].q = q;
-
-      const newOptions = [];
-      for (let i = 0; i < questions[index].options.length; i++) {
-        const opt = prompt(`گزینه ${i+1}:`, questions[index].options[i]);
-        if (opt) newOptions.push(opt);
-      }
-      if (newOptions.length >= 2) questions[index].options = newOptions;
-
-      localStorage.setItem('customQuestions', JSON.stringify(questions));
-      renderGame();
-    }
-
-    function deleteQuestion(index) {
-      if (confirm("آیا این سوال حذف شود؟")) {
-        questions.splice(index, 1);
-        localStorage.setItem('customQuestions', JSON.stringify(questions));
-        renderGame();
-      }
-    }
-
     function renderGame() {
       let html = '';
       myAnswers = new Array(questions.length).fill(null);
 
       questions.forEach((q, i) => {
-        let optsHtml = q.options.map((opt, j) => 
+        let opts = q.options.map((opt, j) => 
           `<button class="option" onclick="selectAnswer(${i}, ${j})">${opt}</button>`
         ).join('');
-
+        
         html += `<div class="question">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; justify-content:space-between;">
             <strong>${i+1}. ${q.q}</strong>
             <div>
-              <span onclick="editQuestion(${i})" style="cursor:pointer; margin:0 8px;">✏️</span>
-              <span onclick="deleteQuestion(${i})" style="cursor:pointer; color:#e91e63;">🗑️</span>
+              <span onclick="editQuestion(${i})" style="cursor:pointer;margin:0 6px;">✏️</span>
+              <span onclick="deleteQuestion(${i})" style="cursor:pointer;color:#e91e63;">🗑️</span>
             </div>
           </div>
-          <div class="options">${optsHtml}</div>
+          <div class="options">${opts}</div>
         </div>`;
       });
-
       document.getElementById('game').innerHTML = html;
     }
 
@@ -112,15 +81,36 @@
       document.getElementById('finishBtn').disabled = myAnswers.includes(null);
     }
 
-    function finishGame() {
-      if (myAnswers.includes(null)) return;
-      alert("بازی تموم شد! ✅\n\n(قابلیت لینک اشتراکی در نسخه بعدی اضافه می‌شود)");
+    function editQuestion(i) {
+      // همان کد قبلی
+      const newQ = prompt("سوال جدید:", questions[i].q);
+      if (newQ) questions[i].q = newQ;
+      localStorage.setItem('customQuestions', JSON.stringify(questions));
+      renderGame();
     }
 
-    window.onload = () => {
-      renderProfiles();
-      renderGame();
-    };
+    function deleteQuestion(i) {
+      if (confirm("حذف این سوال؟")) {
+        questions.splice(i, 1);
+        localStorage.setItem('customQuestions', JSON.stringify(questions));
+        renderGame();
+      }
+    }
+
+    function finishGame() {
+      if (myAnswers.includes(null)) return;
+
+      playerName = prompt("اسمت چیه؟", playerName || "");
+      if (!playerName) return;
+
+      let html = `<h2 style="text-align:center">🎉 بازی توسط ${playerName} تموم شد!</h2>`;
+      html += `<p>جواب‌ها ثبت شد.</p>`;
+
+      document.getElementById('result').innerHTML = html;
+      document.getElementById('result').style.display = 'block';
+    }
+
+    window.onload = renderGame;
   </script>
 </body>
 </html>
