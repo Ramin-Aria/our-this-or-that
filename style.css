@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Vazirmatn:wght@400;500;700&display=swap');
 
 :root {
-  /* پلت رنگی عمیق، رمانتیک و لوکس با الهام از شیشه‌های زرشکی آیفون */
   --bg-dark-velvet: #1a0206;    
-  --card-burgundy: rgba(45, 4, 15, 0.82); /* حالت شیشه‌ای نیمه‌شفاف به سبک iOS */
+  /* گرادینت بسیار ملایم شیشه‌ای از بالا به پایین به سمت تیرگی بیشتر */
+  --card-gradient: linear-gradient(180deg, rgba(45, 4, 15, 0.85) 0%, rgba(26, 2, 6, 0.92) 100%);
   --gold-luxury: #e2ba7d;       
   --text-white: #ffffff;
-  --text-gold: #f1d3a1;
-  --border-subtle: rgba(226, 186, 125, 0.2);
+  --text-gold: #f1d3a1; /* رنگ طلایی لوکس متون و بوردر جدید */
+  --border-gold-subtle: rgba(241, 211, 161, 0.35); /* بوردر همرنگ با تکست طلایی با شفافیت شیک */
 }
 
 * {
@@ -25,7 +25,6 @@ body {
   justify-content: center;
   color: var(--text-white);
   
-  /* تصویر انتخابی شما */
   background: url('https://images.unsplash.com/photo-1546842931-886c185b4c8c?q=80&w=1400&auto=format&fit=crop') no-repeat center center fixed;
   background-size: cover;
   position: relative;
@@ -42,15 +41,32 @@ body::before {
 .container {
   width: 100%;
   max-width: 500px;
-  background: var(--card-burgundy);
-  backdrop-filter: blur(20px); /* افکت بلور شیشه‌ای آیفون */
+  background: var(--card-gradient);
+  backdrop-filter: blur(20px); 
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 28px; /* گوشه گرد لوکس اپل */
-  padding: 45px 25px 35px 25px;
+  border: 1px solid var(--border-gold-subtle); /* بوردر همرنگ اسم طلایی شما */
+  border-radius: 28px; 
+  padding: 45px 25px 45px 25px;
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
   position: relative;
   z-index: 1;
+  overflow: hidden; /* برای اینکه بخش اضافی قلب‌ها خارج از کادر پنهان شود */
+}
+
+/* افکت بک‌گراند دو قلب تو در تو و محو بالا سمت راست کارت */
+.bg-hearts {
+  position: absolute;
+  top: -20px;
+  right: -30px;
+  width: 140px;
+  height: 140px;
+  opacity: 0.04; /* بسیار کم‌رنگ حالت محو لوکس */
+  pointer-events: none;
+  z-index: -1;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter: drop-shadow(-20px 20px 0px rgba(255,255,255,0.6)); /* ایجاد حالت تو در تو با قلب دوم */
 }
 
 /* فونت ریسپانسیو برای عنوان بازی جهت جلوگیری از دو خطه شدن در گوشی‌های کوچک */
@@ -59,27 +75,27 @@ body::before {
   color: var(--text-gold);
   text-align: center;
   margin: 5px 0;
-  font-size: clamp(38px, 10vw, 54px); /* تغییر سایز خودکار بر اساس ابعاد صفحه */
+  font-size: clamp(34px, 9.5vw, 54px); 
   font-weight: 400;
   direction: ltr;
   text-shadow: 0 2px 10px rgba(241, 211, 161, 0.15);
 }
 
-/* استایل جدید ورژن: فرستاده شده به گوشه بالا چپ، کوچک، کم‌رنگ و مینی‌مال */
+/* استایل جدید ورژن: منتقل شده به انتهای کارت وسط، با فونت سیستمی خوانا و مینی‌مال */
 #status {
-  position: absolute;
-  top: 20px;
-  left: 25px;
-  font-family: 'Playfair Display', serif;
-  font-size: 10px;
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 9px;
   font-weight: 600;
-  letter-spacing: 1px;
-  color: var(--gold-luxury);
-  opacity: 0.4;
+  letter-spacing: 2px;
+  color: var(--text-gold);
+  opacity: 0.35;
+  margin-top: 30px;
+  display: block;
 }
 
 .question {
-  border-bottom: 1px solid rgba(226, 186, 125, 0.1);
+  border-bottom: 1px solid rgba(241, 211, 161, 0.1);
   padding-bottom: 22px;
   margin-bottom: 26px;
 }
@@ -105,13 +121,12 @@ body::before {
   }
 }
 
-/* دکمه گزینه‌ها با گوشه گرد ظریف آیفونی */
 button.option {
   padding: 13px 16px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.03);
   color: var(--text-white);
-  border-radius: 14px; /* گوشه گرد هماهنگ با iOS */
+  border-radius: 14px; 
   font-size: 14px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -131,13 +146,12 @@ button.option.selected {
   box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
 }
 
-/* دکمه اصلی پایان بازی با گوشه‌های گرد کشیده و جذاب آیفون */
 .btn {
   background: var(--text-white);
   color: var(--bg-dark-velvet);
   border: none;
   padding: 14px 28px;
-  border-radius: 16px; /* گردی کاملاً آیفونی */
+  border-radius: 16px; 
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -159,7 +173,6 @@ button.option.selected {
   box-shadow: none;
 }
 
-/* دکمه مدیریت با کادر ملایم گرد */
 .btn-admin {
   background: transparent;
   color: var(--text-gold);
@@ -201,7 +214,6 @@ button.option.selected {
   color: #f87171;
 }
 
-/* باکس نمایش نتایج نهایی به صورت یک کارت داخلی شیشه‌ای گرد */
 .result {
   margin-top: 35px;
   padding: 25px;
