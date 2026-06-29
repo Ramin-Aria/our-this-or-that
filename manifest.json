@@ -1,4 +1,5 @@
 {
+  "id": "/our-this-or-that/",
   "name": "Are We a Match?",
   "short_name": "AWM",
   "description": "Online and luxurious game to measure compatibility and understanding",
@@ -12,12 +13,14 @@
     {
       "src": "https://img.icons8.com/fluent-solid/128/f1d3a1/hearts.png",
       "sizes": "128x128",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "https://img.icons8.com/fluent-solid/512/f1d3a1/hearts.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
