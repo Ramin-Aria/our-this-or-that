@@ -81,7 +81,7 @@
       if (isRegisterMode) {
         title.innerText = "ثبت نام حساب جدید";
         btn.innerText = "ثبت نام";
-        toggleText.innerText = "قبلاً حساب ساخته‌اید？ وارد شوید";
+        toggleText.innerText = "قبلاً حساب ساخته‌اید؟ وارد شوید";
         confirmArea.style.display = 'block';
       } else {
         title.innerText = "ورود به برنامه";
@@ -494,7 +494,6 @@
       checkUserAuth();
       renderGame();
 
-      // --- کد فعال‌سازی و رجیستر PWA پشت صحنه مرورگر ---
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
           .then(reg => console.log('PWA Service Worker با موفقیت ثبت شد!', reg))
