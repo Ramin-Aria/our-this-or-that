@@ -34,30 +34,28 @@
       }
     }
 
-function toggleAuthMode() {
+    function toggleAuthMode() {
       isRegisterMode = !isRegisterMode;
       const title = document.getElementById('authTitle');
       const btn = document.getElementById('authPrimaryBtn');
       const toggleText = document.getElementById('authToggleText');
       const confirmArea = document.getElementById('confirmPasswordArea');
       
-      // ریست کردن مقدار فیلد تکرار رمز عبور در هنگام جابجایی حالت‌ها
       document.getElementById('authConfirmPassword').value = "";
 
       if (isRegisterMode) {
         title.innerText = "ثبت نام حساب جدید";
         btn.innerText = "ثبت نام";
         toggleText.innerText = "قبلاً حساب ساخته‌اید؟ وارد شوید";
-        confirmArea.style.display = 'block'; // نمایش فیلد تکرار رمز
+        confirmArea.style.display = 'block';
       } else {
         title.innerText = "ورود به برنامه";
         btn.innerText = "ورود";
         toggleText.innerText = "حساب کاربری ندارید؟ ثبت نام کنید";
-        confirmArea.style.display = 'none'; // مخفی کردن فیلد تکرار رمز
+        confirmArea.style.display = 'none';
       }
     }
 
-// تابع هوشمند برای باز و بسته کردن چشم هر دو فیلد رمز عبور
     function togglePasswordVisibility(inputId, iconId) {
       const passwordInput = document.getElementById(inputId);
       const icon = document.getElementById(iconId);
@@ -72,7 +70,7 @@ function toggleAuthMode() {
       }
     }
     
-function handleAuth() {
+    function handleAuth() {
       const usernameInput = document.getElementById('authUsername').value.trim();
       const passwordInput = document.getElementById('authPassword').value.trim();
       const confirmPasswordInput = document.getElementById('authConfirmPassword').value.trim();
@@ -82,7 +80,6 @@ function handleAuth() {
         return;
       }
       
-      // بررسی حداقل تعداد کاراکتر رمز عبور (حداقل ۴ کاراکتر)
       if (passwordInput.length < 4) {
         alert("رمز عبور باید حداقل ۴ کاراکتر باشد!");
         return;
@@ -91,7 +88,6 @@ function handleAuth() {
       const cleanUsername = usernameInput.replace(/[.#$\[\]]/g, "_");
 
       if (isRegisterMode) {
-        // چک کردن فیلد تکرار رمز عبور در حالت ثبت نام
         if (!confirmPasswordInput) {
           alert("لطفاً تکرار رمز عبور را وارد کنید!");
           return;
@@ -156,9 +152,9 @@ function handleAuth() {
   <div class="container">
     <div class="bg-hearts"></div>
     
-    <div id="userStatusNav" style="display: none; justify-content: space-between; align-items: center; width: 100%; max-width: 400px; margin: 0 auto 20px auto; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; font-size: 13px;">
-      <div style="color: rgba(255,255,255,0.6);">حساب کاربری: <span id="loggedUserName" style="color: var(--text-gold); font-weight: bold;"></span></div>
-      <button onclick="logoutUser()" style="background: none; border: none; color: #ff5555; cursor: pointer; padding: 0; font-size: 13px; font-weight: bold; text-decoration: underline;">Logout</button>
+    <div id="userStatusNav" class="user-status-nav" style="display: none;">
+      <div class="user-status-info">حساب کاربری: <span id="loggedUserName"></span></div>
+      <button onclick="logoutUser()" class="btn-logout">Logout</button>
     </div>
     
     <h1 class="en-title">Are We a Match?</h1>
@@ -185,37 +181,37 @@ function handleAuth() {
       <button class="btn-clear-history" onclick="clearHistory()">حذف کل تاریخچه</button>
     </div>
 
-    <div id="status" style="margin-top: 30px; text-align: center; color: rgba(255,255,255,0.4); font-size: 11px; letter-spacing: 1px;">BY RAMIN • VERSION 5.2.8</div>
+    <div id="status">BY RAMIN • VERSION 5.2.8</div>
   </div>
 
-<div id="authModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 6, 18, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 9999;">
-    <div class="modal-content" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(241, 211, 161, 0.15); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); border-radius: 24px; padding: 30px; width: 90%; max-width: 360px; text-align: center; color: #fff;">
-      <h3 id="authTitle" style="font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 25px; letter-spacing: 1px;">ورود به برنامه</h3>
+  <div id="authModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3 id="authTitle">ورود به برنامه</h3>
       
-      <div style="margin-bottom: 18px; text-align: right;">
-        <label style="display:block; margin-bottom: 6px; font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500;">نام کاربری (فقط انگلیسی):</label>
-        <input type="text" id="authUsername" placeholder="e.g. Ramin" oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '')" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(241, 211, 161, 0.2); background: rgba(255,255,255,0.05); color: #fff; box-sizing: border-box; outline: none; font-size: 14px; text-align: left; direction: ltr;">
+      <div class="auth-field-group">
+        <label>نام کاربری (فقط انگلیسی):</label>
+        <input type="text" id="authUsername" placeholder="e.g. Ramin" oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '')">
       </div>
 
-      <div style="margin-bottom: 18px; text-align: right;">
-        <label style="display:block; margin-bottom: 6px; font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500;">رمز عبور:</label>
-        <div style="position: relative; width: 100%;">
-          <input type="password" id="authPassword" placeholder="******" style="width: 100%; padding: 12px 40px 12px 12px; border-radius: 12px; border: 1px solid rgba(241, 211, 161, 0.2); background: rgba(255,255,255,0.05); color: #fff; box-sizing: border-box; outline: none; font-size: 14px; text-align: left; direction: ltr;">
-          <span class="material-symbols-outlined" id="togglePasswordIcon" onclick="togglePasswordVisibility('authPassword', 'togglePasswordIcon')" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.5); cursor: pointer; user-select: none; font-size: 20px;">visibility</span>
+      <div class="auth-field-group">
+        <label>رمز عبور:</label>
+        <div class="password-wrapper">
+          <input type="password" id="authPassword" placeholder="******">
+          <span class="material-symbols-outlined" id="togglePasswordIcon" onclick="togglePasswordVisibility('authPassword', 'togglePasswordIcon')">visibility</span>
         </div>
       </div>
 
-      <div id="confirmPasswordArea" style="margin-bottom: 25px; text-align: right; display: none;">
-        <label style="display:block; margin-bottom: 6px; font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500;">تکرار رمز عبور:</label>
-        <div style="position: relative; width: 100%;">
-          <input type="password" id="authConfirmPassword" placeholder="******" style="width: 100%; padding: 12px 40px 12px 12px; border-radius: 12px; border: 1px solid rgba(241, 211, 161, 0.2); background: rgba(255,255,255,0.05); color: #fff; box-sizing: border-box; outline: none; font-size: 14px; text-align: left; direction: ltr;">
-          <span class="material-symbols-outlined" id="toggleConfirmPasswordIcon" onclick="togglePasswordVisibility('authConfirmPassword', 'toggleConfirmPasswordIcon')" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.5); cursor: pointer; user-select: none; font-size: 20px;">visibility</span>
+      <div id="confirmPasswordArea" class="auth-field-group" style="display: none;">
+        <label>تکرار رمز عبور:</label>
+        <div class="password-wrapper">
+          <input type="password" id="authConfirmPassword" placeholder="******">
+          <span class="material-symbols-outlined" id="toggleConfirmPasswordIcon" onclick="togglePasswordVisibility('authConfirmPassword', 'toggleConfirmPasswordIcon')">visibility</span>
         </div>
       </div>
 
-      <button id="authPrimaryBtn" onclick="handleAuth()" style="width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, #f1d3a1, #d4af37); color: #1a0f2e; font-weight: bold; font-size: 15px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); letter-spacing: 1px;">ورود</button>
+      <button id="authPrimaryBtn" onclick="handleAuth()" class="btn">ورود</button>
       
-      <p id="authToggleText" style="font-size: 12px; color: var(--text-gold); cursor: pointer; margin-top: 20px; text-decoration: underline; opacity: 0.8;" onclick="toggleAuthMode()">حساب کاربری ندارید؟ ثبت نام کنید</p>
+      <p id="authToggleText" onclick="toggleAuthMode()">حساب کاربری ندارید؟ ثبت نام کنید</p>
     </div>
   </div>
 
@@ -422,11 +418,11 @@ function handleAuth() {
         listEl.innerHTML = history.map((h, index) => `
           <div class="history-item">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <span class="history-role-text" style="color: rgba(255, 255, 255, 0.5) !important; font-size: 11px !important; font-weight: 400 !important;">طراح سوال: ${h.creator}</span>
+              <span class="history-role-text">طراح سوال: ${h.creator}</span>
               <span style="font-size:14px; font-weight:700; color:#4ade80;">${h.percent}% ❤️</span>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <span class="history-player-text" style="color: rgba(255, 255, 255, 0.5) !important; font-size: 11px !important; font-weight: 400 !important;">بازیکن: ${h.player}</span>
+              <span class="history-player-text">بازیکن: ${h.player}</span>
               <span style="font-size:11px; color:rgba(255,255,255,0.5);">${h.dateTime}</span>
             </div>
             <div style="text-align: right; margin-top: 5px;">
