@@ -51,6 +51,20 @@
       }
     }
 
+function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('authPassword');
+      const icon = document.getElementById('togglePasswordIcon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.innerText = 'visibility_off';
+        icon.style.color = 'var(--text-gold)';
+      } else {
+        passwordInput.type = 'password';
+        icon.innerText = 'visibility';
+        icon.style.color = 'rgba(255,255,255,0.5)';
+      }
+    }
+    
     function handleAuth() {
       const usernameInput = document.getElementById('authUsername').value.trim();
       const passwordInput = document.getElementById('authPassword').value.trim();
