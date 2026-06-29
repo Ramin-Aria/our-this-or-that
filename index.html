@@ -17,6 +17,17 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
   <script>
+    // این تابع را در بخش اسکریپت‌های بالا کپی کنید
+function listenForChallenges() {
+  if (!currentUser) return;
+  database.ref('invitations/' + currentUser).on('child_added', (snapshot) => {
+    const invite = snapshot.val();
+    if (confirm(`New challenge from ${invite.sender}! Play now?`)) {
+      window.location.href = `?p=${invite.answers}&p1n=${encodeURIComponent(invite.sender)}`;
+    }
+    database.ref('invitations/' + currentUser + '/' + snapshot.key).remove();
+  });
+}
     const firebaseConfig = {
       apiKey: "AIzaSyBWXOdwUk6GFQ7ZMEHlafIJtX6Tl6Zmtd4",
       authDomain: "are-we-a-match.firebaseapp.com",
@@ -170,6 +181,9 @@
   </script>
 </head>
 <body>
+  <div id="ios-install-banner" style="display:none; padding:15px; background:#f1d3a1; text-align:center; color:#1a0206; font-weight:bold; border-bottom: 2px solid #000;">
+    Install: Tap Share 📤 then "Add to Home Screen"
+  </div>
   <div class="container">
     <div class="bg-hearts"></div>
     
@@ -325,50 +339,62 @@
       document.getElementById('finishBtn').disabled = myAnswers.includes(null);
     }
 
-    function finishGame() {
-      if (myAnswers.includes(null)) return;
+function finishGame() {
+  if (myAnswers.includes(null)) return;
 
-      myName = prompt("Enter your name:", myName || (currentUser ? currentUser : ""));
-      if (!myName) return;
+  myName = prompt("Enter your name:", myName || (currentUser ? currentUser : ""));
+  if (!myName) return;
 
-      const encodedMyAnswers = myAnswers.join('');
-      const base = window.location.origin + window.location.pathname;
+  const encodedMyAnswers = myAnswers.join('');
+  const base = window.location.origin + window.location.pathname;
 
-      let html = `<h2 class="en-title" style="font-size:34px; margin-bottom:15px;">🎉 Done by ${myName}</h2>`;
+  let html = `<h2 class="en-title" style="font-size:34px; margin-bottom:15px;">🎉 Done by ${myName}</h2>`;
 
-      if (isSecondPlayer) {
-        const correctCount = myAnswers.filter((a, i) => a === partnerAnswers[i]).length;
-        const matchPercent = Math.round((correctCount / questions.length) * 100);
-        
-        html += `<p style="font-size:22px; text-align:center; color:var(--text-gold); font-weight:700; margin-bottom:20px;">Match Percentage: ${matchPercent}% ❤️</p>`;
-        
-        questions.forEach((q, i) => {
-          const myOpt = q.options[myAnswers[i]];
-          const partnerOpt = q.options[partnerAnswers[i]];
-          html += `<p style="border-bottom:1px solid rgba(241, 211, 161, 0.1); padding-bottom:10px;">
-            <strong>${i+1}. ${q.q}</strong><br>
-            <span style="color:var(--text-gold)">${myName}:</span> ${myOpt} | <span style="color:var(--text-gold)">${partnerName || "Player 1"}:</span> ${partnerOpt} ${myAnswers[i] === partnerAnswers[i] ? '🌹' : ''}
-          </p>`;
-        });
+  if (isSecondPlayer) {
+    // منطق نمایش نتیجه برای بازیکن دوم
+    const correctCount = myAnswers.filter((a, i) => a === partnerAnswers[i]).length;
+    const matchPercent = Math.round((correctCount / questions.length) * 100);
+    
+    html += `<p style="font-size:22px; text-align:center; color:var(--text-gold); font-weight:700; margin-bottom:20px;">Match Percentage: ${matchPercent}% ❤️</p>`;
+    
+    questions.forEach((q, i) => {
+      const myOpt = q.options[myAnswers[i]];
+      const partnerOpt = q.options[partnerAnswers[i]];
+      html += `<p style="border-bottom:1px solid rgba(241, 211, 161, 0.1); padding-bottom:10px;">
+        <strong>${i+1}. ${q.q}</strong><br>
+        <span style="color:var(--text-gold)">${myName}:</span> ${myOpt} | <span style="color:var(--text-gold)">${partnerName || "Player 1"}:</span> ${partnerOpt} ${myAnswers[i] === partnerAnswers[i] ? '🌹' : ''}
+      </p>`;
+    });
 
-        saveToHistory(partnerName, myName, partnerAnswers, myAnswers);
+    saveToHistory(partnerName, myName, partnerAnswers, myAnswers);
 
-        const encodedPartnerAnswers = partnerAnswers.join('');
-        const resultLink = `${base}?p=${encodedPartnerAnswers}&r=${encodedMyAnswers}&p1n=${encodeURIComponent(partnerName)}&pn=${encodeURIComponent(myName)}`;
-        
-        html += `<p style="margin-top:25px; color:rgba(255,255,255,0.6);">Final result link to send to ${partnerName || 'Player 1'}:</p>`;
-        html += `<input type="text" value="${resultLink}" readonly>`;
-        html += `<button class="btn" onclick="copyLink('${resultLink}')">Copy Result Link</button>`;
-      } else {
-        const shareLink = `${base}?p=${encodedMyAnswers}&p1n=${encodeURIComponent(myName)}`;
-        html += `<p style="color:rgba(255,255,255,0.6); margin-top:20px;">Send this game link to your partner:</p><input type="text" value="${shareLink}" readonly>`;
-        html += `<button class="btn" onclick="copyLink('${shareLink}')">Copy Game Link</button>`;
+    const resultLink = `${base}?p=${partnerAnswers.join('')}&r=${encodedMyAnswers}&p1n=${encodeURIComponent(partnerName)}&pn=${encodeURIComponent(myName)}`;
+    
+    html += `<p style="margin-top:25px; color:rgba(255,255,255,0.6);">Result link to share:</p>`;
+    html += `<input type="text" value="${resultLink}" readonly>`;
+    html += `<button class="btn" onclick="copyLink('${resultLink}')">Copy Result Link</button>`;
+  } else {
+    // منطق ارسال چالش توسط بازیکن اول
+    if (confirm("Would you like to send this challenge directly to your partner?")) {
+      const target = prompt("Enter your partner's username:");
+      if (target) {
+        database.ref('invitations/' + target).push({
+          sender: myName,
+          answers: encodedMyAnswers,
+          timestamp: Date.now()
+        }).then(() => alert("Challenge sent directly to " + target));
       }
-
-      document.getElementById('result').innerHTML = html;
-      document.getElementById('result').style.display = 'block';
-      document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      const shareLink = `${base}?p=${encodedMyAnswers}&p1n=${encodeURIComponent(myName)}`;
+      html += `<p style="color:rgba(255,255,255,0.6); margin-top:20px;">Send this game link to your partner:</p><input type="text" value="${shareLink}" readonly>`;
+      html += `<button class="btn" onclick="copyLink('${shareLink}')">Copy Game Link</button>`;
     }
+  }
+
+  document.getElementById('result').innerHTML = html;
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+}
 
     function copyLink(link) {
       navigator.clipboard.writeText(link).then(() => alert('✅ Link Copied'));
@@ -498,15 +524,24 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      loadFromUrl();
-      checkUserAuth();
-      renderGame();
+  loadFromUrl();
+  checkUserAuth();
+  renderGame();
+  
+  // فعال سازی سیستم دریافت چالش
+  listenForChallenges();
 
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('PWA Service Worker successfully registered!', reg))
-          .catch(err => console.log('PWA Service Worker registration failed:', err));
-      }
+  // چک کردن دستگاه برای بنر آیفون
+  if (/iPhone/i.test(navigator.userAgent) && !window.navigator.standalone) {
+    document.getElementById('ios-install-banner').style.display = 'block';
+  }
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('PWA Service Worker successfully registered!', reg))
+      .catch(err => console.log('PWA Service Worker registration failed:', err));
+  }
+});
     });
   </script>
 </body>
