@@ -57,9 +57,10 @@ function toggleAuthMode() {
       }
     }
 
-function togglePasswordVisibility() {
-      const passwordInput = document.getElementById('authPassword');
-      const icon = document.getElementById('togglePasswordIcon');
+// تابع هوشمند برای باز و بسته کردن چشم هر دو فیلد رمز عبور
+    function togglePasswordVisibility(inputId, iconId) {
+      const passwordInput = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
         icon.innerText = 'visibility_off';
