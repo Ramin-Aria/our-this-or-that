@@ -1,1 +1,22 @@
-
+{
+  "name": "Are We a Match?",
+  "short_name": "AWM",
+  "description": "Online and luxurious game to measure compatibility and understanding",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1a0206",
+  "theme_color": "#1a0206",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/fluent-solid/128/f1d3a1/hearts.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "https://img.icons8.com/fluent-solid/512/f1d3a1/hearts.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
