@@ -11,13 +11,7 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://img.icons8.com/fluent-solid/128/f1d3a1/hearts.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "https://img.icons8.com/fluent-solid/512/f1d3a1/hearts.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
