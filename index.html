@@ -82,6 +82,12 @@ function handleAuth() {
         return;
       }
       
+      // بررسی حداقل تعداد کاراکتر رمز عبور (حداقل ۴ کاراکتر)
+      if (passwordInput.length < 4) {
+        alert("رمز عبور باید حداقل ۴ کاراکتر باشد!");
+        return;
+      }
+      
       const cleanUsername = usernameInput.replace(/[.#$\[\]]/g, "_");
 
       if (isRegisterMode) {
