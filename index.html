@@ -71,9 +71,10 @@ function togglePasswordVisibility() {
       }
     }
     
-    function handleAuth() {
+function handleAuth() {
       const usernameInput = document.getElementById('authUsername').value.trim();
       const passwordInput = document.getElementById('authPassword').value.trim();
+      const confirmPasswordInput = document.getElementById('authConfirmPassword').value.trim();
 
       if (!usernameInput || !passwordInput) {
         alert("لطفاً تمام فیلدها را پر کنید!");
@@ -83,6 +84,16 @@ function togglePasswordVisibility() {
       const cleanUsername = usernameInput.replace(/[.#$\[\]]/g, "_");
 
       if (isRegisterMode) {
+        // چک کردن فیلد تکرار رمز عبور در حالت ثبت نام
+        if (!confirmPasswordInput) {
+          alert("لطفاً تکرار رمز عبور را وارد کنید!");
+          return;
+        }
+        if (passwordInput !== confirmPasswordInput) {
+          alert("رمز عبور و تکرار آن با هم مطابقت ندارند!");
+          return;
+        }
+
         database.ref('users/' + cleanUsername).once('value').then((snapshot) => {
           if (snapshot.exists()) {
             alert("این نام کاربری قبلاً انتخاب شده است! لطفاً نام دیگری انتخاب کنید.");
@@ -112,7 +123,7 @@ function togglePasswordVisibility() {
         });
       }
     }
-
+    
     function loginUser(username) {
       localStorage.setItem('chatUser', username);
       currentUser = username;
