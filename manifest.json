@@ -2,7 +2,7 @@
   "name": "Are We a Match?",
   "short_name": "AWM",
   "description": "Online and luxurious game to measure compatibility and understanding",
-  "start_url": "index.html",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#1a0206",
   "theme_color": "#1a0206",
