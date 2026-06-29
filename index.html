@@ -34,20 +34,26 @@
       }
     }
 
-    function toggleAuthMode() {
+function toggleAuthMode() {
       isRegisterMode = !isRegisterMode;
       const title = document.getElementById('authTitle');
       const btn = document.getElementById('authPrimaryBtn');
       const toggleText = document.getElementById('authToggleText');
+      const confirmArea = document.getElementById('confirmPasswordArea');
       
+      // ریست کردن مقدار فیلد تکرار رمز عبور در هنگام جابجایی حالت‌ها
+      document.getElementById('authConfirmPassword').value = "";
+
       if (isRegisterMode) {
         title.innerText = "ثبت نام حساب جدید";
         btn.innerText = "ثبت نام";
-        toggleText.innerText = "قبلاً حساب ساخته‌اید？ وارد شوید";
+        toggleText.innerText = "قبلاً حساب ساخته‌اید؟ وارد شوید";
+        confirmArea.style.display = 'block'; // نمایش فیلد تکرار رمز
       } else {
         title.innerText = "ورود به برنامه";
         btn.innerText = "ورود";
         toggleText.innerText = "حساب کاربری ندارید؟ ثبت نام کنید";
+        confirmArea.style.display = 'none'; // مخفی کردن فیلد تکرار رمز
       }
     }
 
