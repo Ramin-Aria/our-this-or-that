@@ -11,17 +11,48 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
   <script>
+    // --- تنظیمات فایربیس ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWXOdwUk6GFQ7ZMEHlafIJtX6Tl6Zmtd4",
+      authDomain: "are-we-a-match.firebaseapp.com",
+      databaseURL: "https://are-we-a-match-default-rtdb.firebaseio.com",
+      projectId: "are-we-a-match",
+      storageBucket: "are-we-a-match.firebasestorage.app",
+      messagingSenderId: "771390342120",
+      appId: "1:771390342120:web:5ba6954bfc19cf27239a5d"
+    };
+      
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // --- مدیریت وضعیت کاربران و احراز هویت ---
     let currentUser = localStorage.getItem('chatUser') || null;
     let isRegisterMode = false;
+    const ADMIN_USERNAME = 'admin';
 
     function checkUserAuth() {
+      const authModal = document.getElementById('authModal');
+      const userStatusNav = document.getElementById('userStatusNav');
+      const loggedUserName = document.getElementById('loggedUserName');
+      const adminButtons = document.getElementById('adminButtons');
+
       if (!currentUser) {
-        document.getElementById('authModal').style.display = 'flex';
-        document.getElementById('userStatusNav').style.display = 'none';
+        if (authModal) authModal.style.display = 'flex';
+        if (userStatusNav) userStatusNav.style.display = 'none';
+        if (adminButtons) adminButtons.style.display = 'none';
       } else {
-        document.getElementById('authModal').style.display = 'none';
-        document.getElementById('userStatusNav').style.display = 'flex';
-        document.getElementById('loggedUserName').innerText = currentUser.replace(/_/g, ' ');
+        if (authModal) authModal.style.display = 'none';
+        if (userStatusNav) userStatusNav.style.display = 'flex';
+        if (loggedUserName) loggedUserName.innerText = currentUser.replace(/_/g, ' ');
+        
+        // کنترل قفل بخش مدیریت: فقط یوزر admin دکمه را می‌بیند
+        if (adminButtons) {
+          if (currentUser.toLowerCase() === ADMIN_USERNAME) {
+            adminButtons.style.display = 'block';
+          } else {
+            adminButtons.style.display = 'none';
+          }
+        }
         console.log("کاربر لاگین شده است:", currentUser);
       }
     }
@@ -133,19 +164,6 @@
       document.getElementById('authModal').style.display = 'none';
       location.reload();
     }
-      
-    const firebaseConfig = {
-      apiKey: "AIzaSyBWXOdwUk6GFQ7ZMEHlafIJtX6Tl6Zmtd4",
-      authDomain: "are-we-a-match.firebaseapp.com",
-      databaseURL: "https://are-we-a-match-default-rtdb.firebaseio.com",
-      projectId: "are-we-a-match",
-      storageBucket: "are-we-a-match.firebasestorage.app",
-      messagingSenderId: "771390342120",
-      appId: "1:771390342120:web:5ba6954bfc19cf27239a5d"
-    };
-      
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
   </script>
 </head>
 <body>
@@ -159,7 +177,7 @@
     
     <h1 class="en-title">Are We a Match?</h1>
 
-    <div style="text-align:center; margin:20px 0 10px 0;" id="adminButtons">
+    <div style="text-align:center; margin:20px 0 10px 0; display: none;" id="adminButtons">
       <button class="btn-admin" onclick="addNewQuestion()">BUILD A QUESTION</button>
     </div>
 
@@ -181,7 +199,7 @@
       <button class="btn-clear-history" onclick="clearHistory()">حذف کل تاریخچه</button>
     </div>
 
-    <div id="status">BY RAMIN • VERSION 5.2.8</div>
+    <div id="status">BY RAMIN • VERSION 5.3.0</div>
   </div>
 
   <div id="authModal" class="modal-overlay" style="display: none;">
@@ -217,7 +235,7 @@
 
   <script>
     const defaultQuestions = [
-      {q: "قهوه یا چای?", options: ["قهوه", "چای"]}
+      {q: "قهوه یا چای؟", options: ["قهوه", "چای"]}
     ];
     
     let questions = [...defaultQuestions];
@@ -244,7 +262,6 @@
         myAnswers = r.split('').map(Number);
         if (pn) myName = decodeURIComponent(pn);
         
-        document.getElementById('adminButtons').style.display = 'none';
         document.getElementById('finishActionArea').style.display = 'none';
         
         showFinalResult();
@@ -253,7 +270,6 @@
         questions = JSON.parse(localStorage.getItem('customQuestions')) || [...defaultQuestions];
         partnerAnswers = p.split('').map(Number);
         isSecondPlayer = true;
-        document.getElementById('adminButtons').style.display = 'none';
       } else {
         localStorage.removeItem('customQuestions');
       }
@@ -284,7 +300,8 @@
           `<button class="option" onclick="selectAnswer(${i}, ${j})">${opt}</button>`
         ).join('');
 
-        let admin = !isSecondPlayer ? 
+        // نمایش آیکون‌های مدیریت ادیت و حذف فقط در صورتی که کاربر جاری ادمین باشد
+        let admin = (!isSecondPlayer && currentUser && currentUser.toLowerCase() === ADMIN_USERNAME) ? 
           `<span onclick="editQuestion(${i})" class="material-symbols-outlined action-icon">edit</span>
            <span onclick="deleteQuestion(${i})" class="material-symbols-outlined action-icon delete">delete</span>` : '';
 
@@ -309,7 +326,7 @@
     function finishGame() {
       if (myAnswers.includes(null)) return;
 
-      myName = prompt("اسمتو وارد کن:", myName || "");
+      myName = prompt("اسمتو وارد کن:", myName || (currentUser ? currentUser : ""));
       if (!myName) return;
 
       const encodedMyAnswers = myAnswers.join('');
@@ -469,11 +486,12 @@
       renderGame();
     }
 
-    window.onload = () => {
+    // لود نهایی پس از آماده شدن کامل المان‌ها
+    window.addEventListener('DOMContentLoaded', () => {
       loadFromUrl();
-      renderGame();
       checkUserAuth();
-    };
+      renderGame();
+    });
   </script>
 </body>
 </html>
